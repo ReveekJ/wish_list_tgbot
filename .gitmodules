@@ -1,0 +1,3 @@
+[submodule "DEBUG"]
+	path = DEBUG
+	url = https://github.com/ReveekJ/DEBUG.git
