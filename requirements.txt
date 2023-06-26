@@ -1,0 +1,6 @@
+aiogram
+flask
+uvloop
+ujson
+cchardet
+aiodns
