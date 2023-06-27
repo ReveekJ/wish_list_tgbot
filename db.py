@@ -3,7 +3,7 @@ from DEBUG.DEBUG import DEBUG
 
 
 def create_user_db():
-    db_name = 'groups'
+    global db_name
     con = sql.connect(f'{db_name}.db', detect_types=sql.PARSE_DECLTYPES | sql.PARSE_COLNAMES)
 
     with con:
@@ -14,13 +14,15 @@ def create_user_db():
                             leader_id INTEGER,
                             leader_name TEXT,
                             leader_birthday timestamp,
-                            leader_lang TEXT)''')
+                            leader_lang TEXT,
+                            leader_gender TEXT,
+                            )''')
 
 
 #  group_name = family_23145, where 23145 if leader_id
 def add_new_group(group_name: str, users: str, leader_id: int, leader_name: str, leader_birthday,
                   leader_lang: str, wish: str = ''):
-    db_name = 'groups'
+    global db_name
     con = sql.connect(f'{db_name}.db')
 
     try:
@@ -39,7 +41,7 @@ def add_new_group(group_name: str, users: str, leader_id: int, leader_name: str,
 
 
 def delete_group(group_name: str):
-    db_name = 'groups'
+    global db_name
     con = sql.connect(f'{db_name}.db')
 
     try:
@@ -52,7 +54,7 @@ def delete_group(group_name: str):
 
 
 def add_wish(group_name: str, wish: str):
-    db_name = 'groups'
+    global db_name
     con = sql.connect(f'{db_name}.db')
 
     try:
@@ -73,7 +75,7 @@ def add_wish(group_name: str, wish: str):
 
 
 def delete_wish(group_name: str, wish: str):
-    db_name = 'groups'
+    global db_name
     con = sql.connect(f'{db_name}.db')
 
     try:
@@ -93,6 +95,21 @@ def delete_wish(group_name: str, wish: str):
         raise NameError('Данной группы не существует')
 
 
+def update_value(column_name: str, new_value, **kwargs):
+    global db_name
+    con = sql.connect(f'{db_name}.db')
+
+    try:
+        with con:
+            con.execute(f'UPDATE {db_name} SET {column_name} = "{new_value}" WHERE ({", ".join([i for i in kwargs.keys()])}) = ({"".join(["?, "  if i != len(kwargs.keys()) - 1 else "?" for i in range(len(kwargs.keys()))])})', tuple([i for i in kwargs.values()]))
+
+    except sql.OperationalError as e:
+        if DEBUG:
+            print(e)
+        raise NameError('Данной группы не существует')
+
+
+db_name = 'groups'
 separator = '♣'
 
 # TODO: изменение пола, даты рождения, имени, языка, пользователей в группе
