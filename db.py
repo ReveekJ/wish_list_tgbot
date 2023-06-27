@@ -109,6 +109,21 @@ def update_value(column_name: str, new_value, **kwargs):
         raise NameError('Данной группы не существует')
 
 
+# TODO: доделать
+def search_value(column_name: str, **kwargs):
+    global db_name
+    con = sql.connect(f'{db_name}.db')
+
+    try:
+        with con:
+            res = [i for i in con.execute(f'SELECT {column_name} FROM {db_name} WHERE ({", ".join([i for i in kwargs.keys()])}) = ({"".join(["?, "  if i != len(kwargs.keys()) - 1 else "?" for i in range(len(kwargs.keys()))])})', tuple([i for i in kwargs.values()]))]
+            return res[0]
+    except sql.OperationalError as e:
+        if DEBUG:
+            print(e)
+        raise NameError('Данной группы не существует')
+
+
 db_name = 'groups'
 separator = '♣'
 
