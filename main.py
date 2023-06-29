@@ -30,7 +30,8 @@ async def hello_message(message: types.Message):
         lang = message.from_user.language_code
 
     print(lang)
-    name = message.from_user.first_name + ' ' + message.from_user.last_name
+    name = message.from_user.first_name + ' ' + message.from_user.last_name if message.from_user.last_name is not None \
+        else message.from_user.first_name
     # print(lang)
     # await bot.send_message(chat_id=chat_id, text='Choose language (Выберите язык)', reply_markup=kb.choose_lang_kb()
 
