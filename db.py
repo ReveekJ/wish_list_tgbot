@@ -21,7 +21,7 @@ def create_user_db():
 
 #  group_name = family_23145, where 23145 if leader_id
 def add_new_group(group_name: str, users: str, leader_id: int, leader_name: str, leader_birthday,
-                  leader_lang: str, wish: str = ''):
+                  leader_lang: str, leader_gender: str = '', wish: str = ''):
     global db_name
     con = sql.connect(f'{db_name}.db')
 
@@ -31,9 +31,9 @@ def add_new_group(group_name: str, users: str, leader_id: int, leader_name: str,
             print(group)
             if not group:
                 con.execute(f'INSERT INTO {db_name} (groups_name, users, wish, leader_id, leader_name,'
-                            f'leader_birthday, leader_lang) values(?, ?, ?, ?, ?, ?, ?)',
+                            f'leader_birthday, leader_lang, leader_gender) values(?, ?, ?, ?, ?, ?, ?, ?)',
                             (group_name, users, wish, leader_id, leader_name,
-                             leader_birthday, leader_lang))
+                             leader_birthday, leader_lang, leader_gender))
 
     except sql.OperationalError as e:
         if DEBUG:
