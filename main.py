@@ -7,17 +7,12 @@ from aiogram import Bot, Dispatcher, executor, types, utils
 import keyboard as kb
 import db
 import datetime
+from texts import texts
+
 
 token = '5997812115:AAGoLOMTQqfUl9tKB5WWOHha_8J0YL3l_wU'
 bot = Bot(token=token)
 dp = Dispatcher(bot)
-
-texts = {'ru': {'auto_lang': 'Привет! Автоматически выбран русский язык (Hello! Automatically selected Russian '
-                             'language)',
-                'personally_group_name': 'Личное 🔒'},
-         'en': {'auto_lang': 'Hello! Automatically selected English language (Привет! Автоматически выбран английский '
-                             'язык)',
-                'personally_group_name': 'Personally 🔒'}}
 
 
 @dp.message_handler(commands=['start'])
@@ -43,6 +38,7 @@ async def hello_message(message: types.Message):
                      leader_birthday=datetime.date.today())
 
     await bot.send_message(chat_id=chat_id, text=texts[lang]['auto_lang'], reply_markup=kb.choose_lang_kb(lang=lang))
+    # await bot.send_message(chat_id=chat_id, text=texts)
 
 
 @dp.callback_query_handler(lambda c: c.data == 'ru' or c.data == 'en' or c.data == 'cancel_choose_lang')
