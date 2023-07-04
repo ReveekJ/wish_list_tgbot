@@ -19,8 +19,8 @@ dp = Dispatcher(bot)
 async def hello_message(message: types.Message):
     chat_id = message.from_id
     try:
-        lang = message.from_user.language_code if db.search_value('leader_lang', leader_id=1506907277) == tuple() else \
-            db.search_value('leader_lang', leader_id=1506907277)[0]
+        lang = message.from_user.language_code if db.search_value('leader_lang', leader_id=chat_id) == tuple() else \
+            db.search_value('leader_lang', leader_id=chat_id)[0]
     except NameError:
         lang = message.from_user.language_code
 
@@ -42,16 +42,33 @@ async def hello_message(message: types.Message):
 
 
 @dp.callback_query_handler(lambda c: c.data == 'ru' or c.data == 'en' or c.data == 'cancel_choose_lang')
-async def selected_ru_lang(callback: types.CallbackQuery):
-    await bot.answer_callback_query(callback.id)
+async def choose_lang(callback: types.CallbackQuery):
     chat_id = callback.from_user.id
     data = callback.data
 
     if data != 'cancel_choose_lang':
-        db.update_value(column_name='leader_lang', new_value=callback.data, leader_id=chat_id)
+        db.update_value(column_name='leader_lang', new_value=data, leader_id=chat_id)
+        db.update_value(column_name='groups_name', new_value=texts[data]['personally_group_name'] + '_' + str(chat_id),
+                        leader_id=chat_id)
 
-    db.update_value(column_name='groups_name', new_value=texts[data]['personally_group_name'] + '_' + str(chat_id),
-                    leader_id=chat_id)
+    lang = db.search_value('leader_lang', leader_id=chat_id)[0]
+
+    await bot.answer_callback_query(callback.id)
+    await bot.send_message(chat_id=chat_id, text='done')
+
+    # после того как пользователь выбрал язык спрашиваем его пол
+    # если спросить в hello_message то он отправит сразу запрос и на язык и на пол
+    await bot.send_message(chat_id=chat_id, text=texts[lang]['gender_q'], reply_markup=kb.choose_gender_kb(lang=lang))
+
+
+@dp.callback_query_handler(lambda c: c.data == 'male' or c.data == 'female' or c.data == '')
+async def choose_gender(callback: types.CallbackQuery):
+    chat_id = callback.from_user.id
+    data = callback.data
+
+    db.update_value(column_name='leader_gender', new_value=data, leader_id=chat_id)
+
+    await bot.answer_callback_query(callback.id)
     await bot.send_message(chat_id=chat_id, text='done')
 
 

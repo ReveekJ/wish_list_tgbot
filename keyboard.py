@@ -20,10 +20,13 @@ def choose_lang_kb(lang: str = None):
     return lang_kb
 
 
-def gender_q_kb(lang: str = None):
+def choose_gender_kb(lang: str = None):
     btn_male = InlineKeyboardButton(text=texts[lang]['male'], callback_data='male')
     btn_female = InlineKeyboardButton(text=texts[lang]['female'], callback_data='female')
     btn_none = InlineKeyboardButton(text=texts[lang]['none_gender'], callback_data='none')
+    # btn_male = InlineKeyboardButton(text='male', callback_data='male')
+    # btn_female = InlineKeyboardButton(text='female', callback_data='female')
+    # btn_none = InlineKeyboardButton(text='none', callback_data='none')
 
     gender_kb = InlineKeyboardMarkup(row_width=1).add(btn_male, btn_female, btn_none)
 
