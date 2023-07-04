@@ -15,7 +15,7 @@ def create_user_db():
                             leader_name TEXT,
                             leader_birthday timestamp,
                             leader_lang TEXT,
-                            leader_gender TEXT,
+                            leader_gender TEXT
                             )''')
 
 
@@ -133,7 +133,7 @@ db_name = 'groups'
 separator = '♣'
 
 # TODO: изменение пола, даты рождения, имени, языка, пользователей в группе
-# create_user_db()
+create_user_db()
 # print('создано')
 # add_new_group(group_name='family_23512345', users='mother', leader_id=1234, leader_name='rev',
 #               leader_birthday='27.10.2009', leader_lang='ru')
