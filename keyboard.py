@@ -1,6 +1,6 @@
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from texts import texts
-
+import db
 
 # callback_data = 'ru' or 'en'
 def choose_lang_kb(lang: str = None):
@@ -20,10 +20,11 @@ def choose_lang_kb(lang: str = None):
     return lang_kb
 
 
-def choose_gender_kb(lang: str = None):
-    btn_male = InlineKeyboardButton(text=texts[lang]['male'], callback_data='male')
-    btn_female = InlineKeyboardButton(text=texts[lang]['female'], callback_data='female')
-    btn_none = InlineKeyboardButton(text=texts[lang]['none_gender'], callback_data='none')
+def choose_gender_kb( gender: str, lang: str = None):
+    btn_male = InlineKeyboardButton(text=texts[lang]['male'] if gender != 'male' else texts[lang]['male'] + ' ✅',
+                                    callback_data='male')
+    btn_female = InlineKeyboardButton(text=texts[lang]['female'] if gender != 'female' else texts[lang]['female'] + ' ✅', callback_data='female')
+    btn_none = InlineKeyboardButton(text=texts[lang]['none_gender'] if gender != 'none' else texts[lang]['none_gender'] + ' ✅', callback_data='none')
     # btn_male = InlineKeyboardButton(text='male', callback_data='male')
     # btn_female = InlineKeyboardButton(text='female', callback_data='female')
     # btn_none = InlineKeyboardButton(text='none', callback_data='none')
@@ -31,3 +32,4 @@ def choose_gender_kb(lang: str = None):
     gender_kb = InlineKeyboardMarkup(row_width=1).add(btn_male, btn_female, btn_none)
 
     return gender_kb
+

@@ -3,7 +3,7 @@ import pip
 # from server import keep_alive
 
 pip.main(['install', 'pytelegrambotapi'])
-from aiogram import Bot, Dispatcher, executor, types, utils
+from aiogram import Bot, Dispatcher, executor, types
 import keyboard as kb
 import db
 import datetime
@@ -35,7 +35,8 @@ async def hello_message(message: types.Message):
                      leader_id=chat_id,
                      leader_name=name,
                      leader_lang=lang,
-                     leader_birthday=datetime.date.today())
+                     leader_birthday=datetime.date.today(),
+                     leader_gender='none')
 
     await bot.send_message(chat_id=chat_id, text=texts[lang]['auto_lang'], reply_markup=kb.choose_lang_kb(lang=lang))
     # await bot.send_message(chat_id=chat_id, text=texts)
@@ -52,24 +53,31 @@ async def choose_lang(callback: types.CallbackQuery):
                         leader_id=chat_id)
 
     lang = db.search_value('leader_lang', leader_id=chat_id)[0]
+    gender = db.search_value('leader_gender', leader_id=chat_id)[0]
 
     await bot.answer_callback_query(callback.id)
     await bot.send_message(chat_id=chat_id, text='done')
 
     # после того как пользователь выбрал язык спрашиваем его пол
     # если спросить в hello_message то он отправит сразу запрос и на язык и на пол
-    await bot.send_message(chat_id=chat_id, text=texts[lang]['gender_q'], reply_markup=kb.choose_gender_kb(lang=lang))
+    await bot.send_message(chat_id=chat_id, text=texts[lang]['gender_q'], reply_markup=kb.choose_gender_kb(gender=gender
+                                                                                                           , lang=lang))
 
 
-@dp.callback_query_handler(lambda c: c.data == 'male' or c.data == 'female' or c.data == '')
+@dp.callback_query_handler(lambda c: c.data == 'male' or c.data == 'female' or c.data == 'none')
 async def choose_gender(callback: types.CallbackQuery):
     chat_id = callback.from_user.id
     data = callback.data
 
     db.update_value(column_name='leader_gender', new_value=data, leader_id=chat_id)
 
+    lang = db.search_value('leader_lang', leader_id=chat_id)[0]
+    gender = db.search_value('leader_gender', leader_id=chat_id)[0]
+
     await bot.answer_callback_query(callback.id)
-    await bot.send_message(chat_id=chat_id, text='done')
+    await callback.message.delete()
+    await bot.send_message(chat_id=chat_id, text=texts[lang]['gender_q'], reply_markup=kb.choose_gender_kb(gender=gender
+                                                                                                           , lang=lang))
 
 
 # keep_alive()
