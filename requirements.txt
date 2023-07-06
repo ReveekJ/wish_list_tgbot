@@ -4,3 +4,4 @@ uvloop
 ujson
 cchardet
 aiodns
+telethon
