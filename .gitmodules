@@ -1,3 +1,6 @@
 [submodule "DEBUG"]
 	path = DEBUG
 	url = https://github.com/ReveekJ/DEBUG.git
+[submodule "Parser_Telegram_chats"]
+	path = Parser_Telegram_chats
+	url = https://github.com/ReveekJ/Parser_Telegram_chats.git
