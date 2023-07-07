@@ -8,11 +8,44 @@ import keyboard as kb
 import db
 import datetime
 from texts import texts
-
+from Parser_Telegram_chats.main import send_messages, client
 
 token = '5997812115:AAGoLOMTQqfUl9tKB5WWOHha_8J0YL3l_wU'
 bot = Bot(token=token)
 dp = Dispatcher(bot)
+
+
+# TODO: выбор дня рождения
+
+async def send_invite(contact_id, from_id):
+    # lang = db.search_value('leader_lang', leader_id=contact_id)
+    name = db.search_value('leader_name', leader_id=from_id)[0]
+
+    async with client:
+        await send_messages(contact_id, [f'{texts["any"]["invite1"]} {name} {texts["any"]["invite2"]}'])
+
+
+@dp.message_handler(content_types=types.ContentType.CONTACT)
+async def invite(message: types.Contact):
+    # id и телефон контакта, которого отправил пользователь
+    phone = message['contact']['phone_number']
+    contact_id = message['contact']['user_id']
+    user_id = message['from']['id']
+    user_name = db.search_value('leader_name', leader_id=user_id)[0]
+    contact_lang = db.search_value('leader_lang', leader_id=contact_id)
+
+    try:
+        # если в бд есть contact_id - то он не упадет с ошибкой, иначе nameError
+        db.search_value('leader_id', leader_id=contact_id)
+        await bot.send_message(chat_id=contact_id, text=f'{texts[contact_lang]["invite1"]} {user_name} {texts[contact_lang]["invite2"]}')
+    except NameError:
+        await send_invite(phone if phone is not None else contact_id, user_id)
+    # print(phone, contact_id)
+
+
+# @dp.message_handler(content_types=types.ContentType.ANY)
+# async def t(mes):
+#     await bot.send_message(chat_id=5953837676, text='привет')
 
 
 @dp.message_handler(commands=['start'])
