@@ -1,3 +1,4 @@
+import datetime
 import sqlite3 as sql
 from DEBUG.DEBUG import DEBUG
 
@@ -116,7 +117,10 @@ def search_value(column_name: str, **kwargs):
     try:
         with con:
             res = [i for i in con.execute(f'SELECT {column_name} FROM {db_name} WHERE ({", ".join([i for i in kwargs.keys()])}) = ({"".join(["?, "  if i != len(kwargs.keys()) - 1 else "?" for i in range(len(kwargs.keys()))])})', tuple([i for i in kwargs.values()]))]
-            return res[0]
+            if column_name != 'leader_birthday' and res[0][0] != 'none':
+                return res[0][0]
+            else:
+                return datetime.datetime.strptime(res[0][0], '%Y-%m-%d')
 
     except sql.OperationalError as e:
         if DEBUG:
@@ -134,14 +138,3 @@ separator = '♣'
 
 # TODO: изменение пола, даты рождения, имени, языка, пользователей в группе
 create_user_db()
-# print('создано')
-# add_new_group(group_name='family_23512345', users='mother', leader_id=1234, leader_name='rev',
-#               leader_birthday='27.10.2009', leader_lang='ru')
-# print('есть данные')
-# delete_group('family_23512345')
-# delete_group('family_23512345')
-# print('удалили')
-# add_wish('family_23512345', 'ноут')
-# print('добавлено желание')
-
-# delete_wish('family_23512345', 'мышка')
