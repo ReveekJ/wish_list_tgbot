@@ -1,6 +1,6 @@
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from texts import texts
-import db
+# import db
 
 
 # callback_data = 'ru' or 'en'
