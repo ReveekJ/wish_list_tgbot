@@ -61,7 +61,7 @@ def text_to_num_month(text):
     a = {months[i]: nums[i] for i in range(len(months))}
     _a = {j: i for i, j in a.items()}
 
-    return a, _a
-
-
-text_to_num_month(12)
+    if type(text) == str:
+        return a[text]
+    else:
+        return _a[text]
