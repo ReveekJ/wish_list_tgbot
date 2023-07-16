@@ -39,8 +39,7 @@ def choose_gender_kb(gender: str, lang: str = None):
 
 def choose_month_birth_kb(month: str, lang: str):
     months = ['dec', 'jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov']
-    month_kb = InlineKeyboardMarkup()
-
+    month_kb = InlineKeyboardMarkup(row_width=3)
     # i == 'dec' for example
     for i in range(0, len(months), 3):
         month_kb.add(InlineKeyboardButton(text=texts[lang][months[i]] if months[i] != month else texts[lang][months[i]]
@@ -54,3 +53,27 @@ def choose_month_birth_kb(month: str, lang: str):
     month_kb.add(InlineKeyboardButton(text=texts[lang]['next'], callback_data='next'))
 
     return month_kb
+
+
+def choose_day_birth_kb(day: int, month: str, lang: str):
+    month_day = {'dec': 31, 'jan': 31, 'feb': 29, 'mar': 31, 'apr': 30, 'may': 31, 'jun': 30, 'jul': 31, 'aug': 31,
+                 'sep': 30, 'oct': 31, 'nov': 30}
+    day_kb = InlineKeyboardMarkup(row_width=3)
+
+    for i in range(1, month_day[month] + 1, 3):
+        if i + 2 <= month_day[month]:
+            day_kb.add(InlineKeyboardButton(text=str(i) if day != i else str(i) + ' ✅', callback_data=str(i)),
+                       InlineKeyboardButton(text=str(i + 1) if day != i + 1 else str(i + 1) + ' ✅',
+                                            callback_data=str(i + 1)),
+                       InlineKeyboardButton(text=str(i + 2) if day != i + 2 else str(i + 2) + ' ✅',
+                                            callback_data=str(i + 2)))
+        elif i + 1 <= month_day[month]:
+            day_kb.add(InlineKeyboardButton(text=str(i) if day != i else str(i) + ' ✅', callback_data=str(i)),
+                       InlineKeyboardButton(text=str(i + 1) if day != i + 1 else str(i + 1) + ' ✅',
+                                            callback_data=str(i + 1)))
+        else:
+            day_kb.add(InlineKeyboardButton(text=str(i) if day != i else str(i) + ' ✅', callback_data=str(i)))
+        # day_kb.add(InlineKeyboardButton(text=str(i) if day != i else str(i) + ' ✅', callback_data=str(i)))
+
+    day_kb.add(InlineKeyboardButton(text=texts[lang]['next'], callback_data='next'))
+    return day_kb
