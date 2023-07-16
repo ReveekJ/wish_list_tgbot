@@ -4,4 +4,5 @@ test.py
 __pycache__/
 .idea/
 venv/
-Parser_Telegram_chats/config.py
+*/Parser_Telegram_chats/config.py
+*.session
