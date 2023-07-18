@@ -29,7 +29,6 @@ def add_new_group(group_name: str, users: str, leader_id: int, leader_name: str,
     try:
         with con:
             group = [i for i in con.execute(f'SELECT * FROM {db_name} WHERE groups_name = "{group_name}"')]
-            print(group)
             if not group:
                 con.execute(f'INSERT INTO {db_name} (groups_name, users, wish, leader_id, leader_name,'
                             f'leader_birthday, leader_lang, leader_gender) values(?, ?, ?, ?, ?, ?, ?, ?)',
@@ -117,10 +116,12 @@ def search_value(column_name: str, **kwargs):
     try:
         with con:
             res = [i for i in con.execute(f'SELECT {column_name} FROM {db_name} WHERE ({", ".join([i for i in kwargs.keys()])}) = ({"".join(["?, "  if i != len(kwargs.keys()) - 1 else "?" for i in range(len(kwargs.keys()))])})', tuple([i for i in kwargs.values()]))]
-            if column_name != 'leader_birthday' and res[0][0] != 'none':
+            if column_name == 'leader_birthday' and res[0][0].lower != 'none':
+                return datetime.datetime.strptime(res[0][0], '%Y-%m-%d')
+            elif column_name == 'leader_birthday' and res[0][0].lower == 'none':
                 return res[0][0]
             else:
-                return datetime.datetime.strptime(res[0][0], '%Y-%m-%d')
+                return res[0]
 
     except sql.OperationalError as e:
         if DEBUG:
