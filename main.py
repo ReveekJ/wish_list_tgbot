@@ -73,7 +73,7 @@ async def hello_message(message: types.Message):
     # отправляем запрос ны выбор языка
     if db.search_value('leader_gender', leader_id=chat_id)[0] == 'NONE':
         await bot.send_message(chat_id=chat_id, text=texts[lang]['auto_lang'],
-                               reply_markup=kb.choose_lang_kb(lang=lang))
+                               reply_markup=kb.choose_lang_kb(lang=lang), disable_notification=True)
     else:
         # TODO: отправить основное сообщение
         pass
@@ -95,8 +95,8 @@ async def choose_lang(callback: types.CallbackQuery):
 
     await bot.answer_callback_query(callback.id)
 
-    await bot.send_message(chat_id=chat_id, text=texts[lang]['auto_lang'], reply_markup=kb.choose_lang_kb(lang=lang))
-
+    await bot.send_message(chat_id=chat_id, text=texts[lang]['auto_lang'], reply_markup=kb.choose_lang_kb(lang=lang),
+                           disable_notification=True)
 
 
 @dp.callback_query_handler(lambda c: c.data == 'male' or c.data == 'female' or c.data == 'none')
@@ -112,7 +112,8 @@ async def choose_gender(callback: types.CallbackQuery):
     await bot.answer_callback_query(callback.id)
     await callback.message.delete()
     await bot.send_message(chat_id=chat_id, text=texts[lang]['gender_q'], reply_markup=kb.choose_gender_kb(gender=gender
-                                                                                                           , lang=lang))
+                                                                                                           , lang=lang),
+                           disable_notification=True)
 
 
 # сначала др потом гендер
@@ -137,8 +138,8 @@ async def choose_month(callback: types.CallbackQuery):
     await bot.send_message(chat_id=chat_id, text=texts[lang]['choose_month'],
                            reply_markup=kb.choose_month_birth_kb(lang=lang,
                                                                  month=text_to_num_month(month.month) if type(
-                                                                     month) != str else
-                                                                 month))
+                                                                     month) != str else month),
+                           disable_notification=True)
 
 
 @dp.callback_query_handler(lambda c: c.data.isdigit())
@@ -157,7 +158,8 @@ async def choose_day_of_birth(callback: types.CallbackQuery):
     await bot.delete_message(chat_id=chat_id, message_id=callback.message.message_id)
     await bot.send_message(chat_id=chat_id, text=texts[lang]['day_q'],
                            reply_markup=kb.choose_day_birth_kb(day=data, month=text_to_num_month(month),
-                                                               lang=lang))
+                                                               lang=lang),
+                           disable_notification=True)
 
 
 @dp.callback_query_handler(lambda c: c.data == 'next')
@@ -175,7 +177,7 @@ async def _next(callback: types.CallbackQuery):
 
             await bot.send_message(chat_id=chat_id, text=texts[lang]['choose_month'],
                                    reply_markup=kb.choose_month_birth_kb(lang=lang,
-                                                                         month='none'))  # month.month if type(month)
+                                                                         month='none'), disable_notification=True)  # month.month if type(month)
             # != str else month
         elif text == texts[lang]['choose_month']:
             # отправляем сообщение на выбор дня рождения
@@ -183,11 +185,12 @@ async def _next(callback: types.CallbackQuery):
 
             await bot.send_message(chat_id=chat_id, text=texts[lang]['day_q'],
                                    reply_markup=kb.choose_day_birth_kb(day=0, month=text_to_num_month(month),
-                                                                       lang=lang))
+                                                                       lang=lang), disable_notification=True)
         elif text == texts[lang]['day_q']:
             # запрос гендера
             await bot.send_message(chat_id=chat_id, text=texts[lang]['gender_q'],
-                                   reply_markup=kb.choose_gender_kb(gender='none', lang=lang))
+                                   reply_markup=kb.choose_gender_kb(gender='none', lang=lang),
+                                   disable_notification=True)
         elif text == texts[lang]['gender_q']:
             # создание группы
             pass
