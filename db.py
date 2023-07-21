@@ -16,7 +16,8 @@ def create_user_db():
                             leader_name TEXT,
                             leader_birthday timestamp,
                             leader_lang TEXT,
-                            leader_gender TEXT
+                            leader_gender TEXT,
+                            create_group INTEGER,
                             )''')
 
 
@@ -137,5 +138,4 @@ def search_value(column_name: str, **kwargs):
 db_name = 'groups'
 separator = '♣'
 
-# TODO: изменение пола, даты рождения, имени, языка, пользователей в группе
 create_user_db()
