@@ -5,3 +5,4 @@ ujson
 cchardet
 aiodns
 telethon
+pip
