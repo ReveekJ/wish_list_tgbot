@@ -17,7 +17,7 @@ def create_user_db():
                             leader_birthday timestamp,
                             leader_lang TEXT,
                             leader_gender TEXT,
-                            create_group INTEGER,
+                            create_group INTEGER DEFAULT 0
                             )''')
 
 
