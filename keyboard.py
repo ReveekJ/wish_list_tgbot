@@ -77,3 +77,11 @@ def choose_day_birth_kb(day: int, month: str, lang: str):
 
     day_kb.add(InlineKeyboardButton(text=texts[lang]['next'], callback_data='next'))
     return day_kb
+
+
+def end_invite_kb(lang: str):
+    end_kb = InlineKeyboardMarkup()
+    end_btn = InlineKeyboardButton(text=texts[lang]['next'], callback_data='next')
+    end_kb.add(end_btn)
+
+    return end_kb
