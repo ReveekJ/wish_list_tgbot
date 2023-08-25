@@ -69,32 +69,35 @@ async def invite(message: types.Contact, ):
 @dp.message_handler(commands=['start'])
 async def hello_message(message: types.Message):
     chat_id = message.from_id
+
+    # Удаляем сообщение /start, чтобы было красиво
+    await bot.delete_message(chat_id=chat_id, message_id=message.message_id)
+
     try:
-        lang = message.from_user.language_code if db.search_value('leader_lang', leader_id=chat_id) == tuple() else \
-            db.search_value('leader_lang', leader_id=chat_id)[0]
+        # пытаемся найти пользователя с id == chat_id, если такой есть, то ничего не делаем, а если такого нет,
+        # то вызывается исключение NameError
+        db.search_value('leader_id', leader_id=chat_id)
     except NameError:
         lang = message.from_user.language_code
 
-    name = message.from_user.first_name + ' ' + message.from_user.last_name if message.from_user.last_name is not None \
-        else message.from_user.first_name
-    # print(lang)
-    # await bot.send_message(chat_id=chat_id, text='Choose language (Выберите язык)', reply_markup=kb.choose_lang_kb()
+        name = message.from_user.first_name + ' ' + message.from_user.last_name if message.from_user.last_name is not None \
+            else message.from_user.first_name
 
-    db.add_new_group(group_name=texts[lang]['personally_group_name'] + '_' + str(chat_id),
-                     users=str(chat_id),
-                     leader_id=chat_id,
-                     leader_name=name,
-                     leader_lang=lang,
-                     leader_birthday='NONE',
-                     leader_gender='NONE')
-    # отправляем запрос ны выбор языка
-    if db.search_value('leader_gender', leader_id=chat_id)[0] == 'NONE':
-        await bot.send_message(chat_id=chat_id, text=texts[lang]['auto_lang'],
-                               reply_markup=kb.choose_lang_kb(lang=lang), disable_notification=True)
-    else:
-        # TODO: отправить основное сообщение
-        pass
-    # await bot.send_message(chat_id=chat_id, text=texts)
+        db.add_new_group(group_name=texts[lang]['personally_group_name'] + '_' + str(chat_id),
+                         users=str(chat_id),
+                         leader_id=chat_id,
+                         leader_name=name,
+                         leader_lang=lang,
+                         leader_birthday='NONE',
+                         leader_gender='NONE')
+        # отправляем запрос ны выбор языка
+        if db.search_value('leader_gender', leader_id=chat_id)[0] == 'NONE':
+            await bot.send_message(chat_id=chat_id, text=texts[lang]['auto_lang'],
+                                   reply_markup=kb.choose_lang_kb(lang=lang), disable_notification=True)
+        else:
+            # TODO: отправить основное сообщение
+            pass
+
 
 
 @dp.callback_query_handler(lambda c: c.data == 'ru' or c.data == 'en' or c.data == 'cancel_choose_lang')
