@@ -119,9 +119,9 @@ def search_value(column_name: str, **kwargs):
     try:
         with con:
             res = [i for i in con.execute(f'SELECT {column_name} FROM {db_name} WHERE ({", ".join([i for i in kwargs.keys()])}) = ({"".join(["?, "  if i != len(kwargs.keys()) - 1 else "?" for i in range(len(kwargs.keys()))])})', tuple([i for i in kwargs.values()]))]
-            if column_name == 'leader_birthday' and res[0][0].lower != 'none':
+            if column_name == 'leader_birthday' and res[0][0].lower() != 'none':
                 return datetime.datetime.strptime(res[0][0], '%Y-%m-%d')
-            elif column_name == 'leader_birthday' and res[0][0].lower == 'none':
+            elif column_name == 'leader_birthday' and res[0][0].lower() == 'none':
                 return res[0][0]
             else:
                 return res[0]
