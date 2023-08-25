@@ -85,3 +85,12 @@ def end_invite_kb(lang: str):
     end_kb.add(end_btn)
 
     return end_kb
+
+
+def note_birthday_kb(lang: str):
+    note_kb = InlineKeyboardMarkup(row_width=1)
+    ok_btn = InlineKeyboardButton(text=texts[lang]['ok'], callback_data='next')
+    dont_want_send_btn = InlineKeyboardButton(text=texts[lang]['none_gender'], callback_data='none_birthday')
+    note_kb.add(ok_btn, dont_want_send_btn)
+
+    return note_kb
