@@ -137,8 +137,8 @@ async def choose_gender(callback: types.CallbackQuery):
 @dp.callback_query_handler(lambda c: c.data in ['dec', 'jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul',
                                                 'aug', 'sep', 'oct', 'nov'])
 async def choose_month(callback: types.CallbackQuery):
-    data = callback.data
-    data = text_to_num_month(data)
+    # if callback.data == 'none':
+    data = text_to_num_month(callback.data)
     chat_id = callback.from_user.id
     callback_id = callback.id
     mes_id = callback.message.message_id
@@ -149,7 +149,7 @@ async def choose_month(callback: types.CallbackQuery):
 
     await bot.answer_callback_query(callback_id)
     await bot.delete_message(chat_id=chat_id, message_id=mes_id)
-    # отправляем запрос на день рождения
+
     month = db.search_value('leader_birthday', leader_id=chat_id)
 
     await bot.send_message(chat_id=chat_id, text=texts[lang]['choose_month'],
@@ -170,6 +170,8 @@ async def choose_day_of_birth(callback: types.CallbackQuery):
                              month=month, day=data)
 
     db.update_value('leader_birthday', new_date, leader_id=chat_id)
+    db.update_value('is_chose_birthday', 1, leader_id=chat_id)
+
     await bot.answer_callback_query(callback.id)
     # удаляем сообщение и отправляем снова
     await bot.delete_message(chat_id=chat_id, message_id=callback.message.message_id)
@@ -188,6 +190,8 @@ async def create_group1(chat_id):
     await bot.send_message(chat_id=chat_id, text=texts[lang]['create_group1'], disable_notification=True)
 
 
+# выбирает название группы
+# еще не сделано: будет записывать новые желания
 @dp.message_handler(content_types=types.ContentType.TEXT)
 async def create_group2(message: types.Message):
     chat_id = message.from_user.id
@@ -212,6 +216,21 @@ async def create_group2(message: types.Message):
                                reply_markup=kb.end_invite_kb(lang=lang))
 
 
+# если пользователь не согласился на предоставление ДР
+@dp.callback_query_handler(lambda c: c.data == 'none_birthday')
+async def none_birthday(callback: types.CallbackQuery):
+    # отправление следующего вопроса после ДР: пола
+    chat_id = callback.from_user.id
+    lang = db.search_value('leader_lang', leader_id=chat_id)[0]
+
+    await bot.delete_message(chat_id=chat_id, message_id=callback.message.message_id)
+    await bot.answer_callback_query(callback.id)
+
+    await bot.send_message(chat_id=chat_id, text=texts[lang]['gender_q'],
+                           reply_markup=kb.choose_gender_kb(gender='none', lang=lang),
+                           disable_notification=True)
+
+
 @dp.callback_query_handler(lambda c: c.data == 'next')
 async def _next(callback: types.CallbackQuery):
     chat_id = callback.from_user.id
@@ -222,57 +241,42 @@ async def _next(callback: types.CallbackQuery):
 
     if db.search_value('leader_gender', leader_id=chat_id)[0] == 'NONE':
         if text == texts[lang]['auto_lang']:
-            # отправляем запрос на день рождения
+            # отправляем запрос на согласие на ДР
             # month = db.search_value('leader_birthday', leader_id=chat_id)
+            await bot.send_message(chat_id=chat_id, text=texts[lang]['note_birthday'],
+                                   reply_markup=kb.note_birthday_kb(lang=lang),
+                                   disable_notification=True)
 
+        elif text == texts[lang]['note_birthday']:
+            # если человек согласился на ДР, то отправить запрос месяца
             await bot.send_message(chat_id=chat_id, text=texts[lang]['choose_month'],
                                    reply_markup=kb.choose_month_birth_kb(lang=lang,
                                                                          month='none'),
-                                   disable_notification=True)  # month.month if type(month)
-            # != str else month
-        elif text == texts[lang]['choose_month']:
-            # отправляем сообщение на выбор дня рождения
-            # TODO: bug fix
-            '''ERROR: Task exception was never retrieved
-future: <Task finished name='Task-18' coro=<Dispatcher._process_polling_updates() done, defined at /home/user/PycharmProjects/wish_list_tgbot/venv/lib/python3.11/site-packages/aiogram/dispatcher/dispatcher.py:407> exception=ValueError("time data 'NONE' does not match format '%Y-%m-%d'")>
-Traceback (most recent call last):
-  File "/home/user/PycharmProjects/wish_list_tgbot/venv/lib/python3.11/site-packages/aiogram/dispatcher/dispatcher.py", line 415, in _process_polling_updates
-    for responses in itertools.chain.from_iterable(await self.process_updates(updates, fast)):
-                                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/user/PycharmProjects/wish_list_tgbot/venv/lib/python3.11/site-packages/aiogram/dispatcher/dispatcher.py", line 235, in process_updates
-    return await asyncio.gather(*tasks)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/user/PycharmProjects/wish_list_tgbot/venv/lib/python3.11/site-packages/aiogram/dispatcher/handler.py", line 117, in notify
-    response = await handler_obj.handler(*args, **partial_data)
-               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/user/PycharmProjects/wish_list_tgbot/venv/lib/python3.11/site-packages/aiogram/dispatcher/dispatcher.py", line 283, in process_update
-    return await self.callback_query_handlers.notify(update.callback_query)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/user/PycharmProjects/wish_list_tgbot/venv/lib/python3.11/site-packages/aiogram/dispatcher/handler.py", line 117, in notify
-    response = await handler_obj.handler(*args, **partial_data)
-               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/user/PycharmProjects/wish_list_tgbot/main.py", line 218, in _next
-    month = db.search_value('leader_birthday', leader_id=chat_id).month
-            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/user/PycharmProjects/wish_list_tgbot/db.py", line 121, in search_value
-    return datetime.datetime.strptime(res[0][0], '%Y-%m-%d')
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/usr/lib/python3.11/_strptime.py", line 568, in _strptime_datetime
-    tt, fraction, gmtoff_fraction = _strptime(data_string, format)
-                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/usr/lib/python3.11/_strptime.py", line 349, in _strptime
-    raise ValueError("time data %r does not match format %r" %
-ValueError: time data 'NONE' does not match format '%Y-%m-%d'''
-            month = db.search_value('leader_birthday', leader_id=chat_id).month
-
-            await bot.send_message(chat_id=chat_id, text=texts[lang]['day_q'],
-                                   reply_markup=kb.choose_day_birth_kb(day=0, month=text_to_num_month(month),
-                                                                       lang=lang), disable_notification=True)
-        elif text == texts[lang]['day_q']:
-            # запрос гендера
-            await bot.send_message(chat_id=chat_id, text=texts[lang]['gender_q'],
-                                   reply_markup=kb.choose_gender_kb(gender='none', lang=lang),
                                    disable_notification=True)
+        elif text == texts[lang]['choose_month']:
+
+            if db.search_value('leader_birthday', leader_id=chat_id) == 'NONE':
+                await bot.send_message(chat_id=chat_id, text=texts[lang]['choose_month'],
+                                       reply_markup=kb.choose_month_birth_kb(lang=lang,
+                                                                             month='none'),
+                                       disable_notification=True)
+            else:
+                # отправляем сообщение на выбор дня рождения
+                month = db.search_value('leader_birthday', leader_id=chat_id).month
+                await bot.send_message(chat_id=chat_id, text=texts[lang]['day_q'],
+                                       reply_markup=kb.choose_day_birth_kb(day=0, month=text_to_num_month(month),
+                                                                           lang=lang), disable_notification=True)
+        elif text == texts[lang]['day_q']:
+            if db.search_value('is_chose_birthday', leader_id=chat_id)[0] == 0:
+                month = db.search_value('leader_birthday', leader_id=chat_id).month
+                await bot.send_message(chat_id=chat_id, text=texts[lang]['day_q'],
+                                       reply_markup=kb.choose_day_birth_kb(day=0, month=text_to_num_month(month),
+                                                                           lang=lang), disable_notification=True)
+            else:
+                # запрос гендера
+                await bot.send_message(chat_id=chat_id, text=texts[lang]['gender_q'],
+                                       reply_markup=kb.choose_gender_kb(gender='none', lang=lang),
+                                       disable_notification=True)
         elif text == texts[lang]['gender_q']:
             # создание группы
 
