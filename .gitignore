@@ -1,0 +1,17 @@
+# created by virtualenv automatically
+.idea/
+schedule*.png
+*.log
+venv/
+__pycache__/
+qodana.yaml
+test/test.py
+.env
+*.mp4
+*.mp3
+log.log
+*.http
+nats/data/*
+nui/*
+/proto/*
+*.ipynb
