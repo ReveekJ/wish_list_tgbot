@@ -3,7 +3,7 @@ from src.db.wishes.schemas import Wish
 from src.utils.db_template import DBTemplate, DBParams
 
 
-class WishCRUD(DBTemplate):
+class WishCRUD(DBTemplate[WishModel, Wish]):
     def __init__(self):
         super().__init__(
             model_class=WishModel,
