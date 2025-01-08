@@ -32,7 +32,7 @@ class DBTemplate(DBContextManagerTemplate):
         self._db.add(model)
         self._db.commit()
 
-    def get(self, obj_id: int) -> Optional[BaseModel]:
+    def get_obj_by_id(self, obj_id: int) -> Optional[BaseModel]:
         obj = self._db.query(self._model).filter(self._model.id == obj_id).first()
         return self._schema.model_validate(obj, from_attributes=True) if obj else None
 

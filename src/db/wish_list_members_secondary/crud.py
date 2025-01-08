@@ -16,7 +16,7 @@ class WishListMembersSecondaryCRUD(DBTemplate):
         )
         self._model: WishListMembersModel
 
-    def get(self, obj_id: int) -> Optional[BaseModel]:
+    def get_obj_by_id(self, obj_id: int) -> Optional[BaseModel]:
         raise NotImplementedError()
 
     def get_all(self, skip: int = 0, limit: int = 10) -> List[BaseModel]:

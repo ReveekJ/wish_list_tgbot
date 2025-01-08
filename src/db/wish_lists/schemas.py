@@ -5,6 +5,7 @@ from pydantic import BaseModel
 class WishList(BaseModel):
     id: int
     user_id: int
+    name: str
 
     members: list["User"]
     wishes: list["Wish"]

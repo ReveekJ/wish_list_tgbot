@@ -11,6 +11,7 @@ class WishListModel(Base):
 
     id: Mapped[BigInteger] = mapped_column(BigInteger, primary_key=True, autoincrement=True)
     owner_id: Mapped[BigInteger] = mapped_column(BigInteger, ForeignKey("users.id"))
+    name: Mapped[str]
 
     owner: Mapped["UserModel"] = relationship(
         back_populates='own_wish_lists'
