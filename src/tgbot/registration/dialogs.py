@@ -1,8 +1,8 @@
 from aiogram_dialog import Window, Dialog
-from aiogram_dialog.widgets.kbd import Select, Group, SwitchTo
-from aiogram_dialog.widgets.text import Format
+from aiogram_dialog.widgets.kbd import Select, Group
 
 from src.custom_widgets.birthdate_asking_calendar import BirthdateAskingCalendar
+from src.custom_widgets.custom_back_button import BackButton
 from src.custom_widgets.i18n_format import I18NFormat
 from src.tgbot.registration.getters import gender_getter
 from src.tgbot.registration.handlers import birthdate_select_handler, gender_select_handler
@@ -29,9 +29,7 @@ registration_dialog = Dialog(
             ),
             width=1
         ),
-        SwitchTo(
-            I18NFormat('back'),
-            id='back_to_birthdate',
+        BackButton(
             state=RegistrationSG.birthdate
         ),
         getter=gender_getter,
