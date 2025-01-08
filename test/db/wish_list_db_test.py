@@ -10,6 +10,7 @@ def wish_list_crud():
 def sample_wish_list():
     wish_list = WishList(
         id=1,
+        name='aaaa',
         user_id=1,
         members=[],
         wishes=[]
@@ -23,7 +24,7 @@ def test_create_wish_list(wish_list_crud, sample_wish_list):
 
 def test_get_wish_list(wish_list_crud, sample_wish_list):
     wish_list_crud.create(sample_wish_list)
-    retrieved_wish_list = wish_list_crud.get(sample_wish_list.id)
+    retrieved_wish_list = wish_list_crud.get_obj_by_id(sample_wish_list.id)
     assert retrieved_wish_list.id == sample_wish_list.id
     wish_list_crud.delete(sample_wish_list.id)
 
@@ -46,4 +47,4 @@ def test_delete_wish_list(wish_list_crud, sample_wish_list):
     wish_list_crud.create(sample_wish_list)
     deleted_wish_list = wish_list_crud.delete(sample_wish_list.id)
     assert deleted_wish_list.id == sample_wish_list.id
-    assert wish_list_crud.get(sample_wish_list.id) is None
+    assert wish_list_crud.get_obj_by_id(sample_wish_list.id) is None
