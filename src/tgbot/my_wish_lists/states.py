@@ -6,6 +6,8 @@ class MyWishListSG(StatesGroup):
     action_in_wish_list = State()
     list_of_wishes = State()
     list_of_members = State()
+    action_with_wish = State()
+    delete_wish = State()
 
 
 class AddWishSG(StatesGroup):
