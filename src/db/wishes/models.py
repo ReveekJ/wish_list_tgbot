@@ -15,7 +15,9 @@ class WishModel(Base):
     name: Mapped[str]
     description: Mapped[Optional[str]]
     link_to_marketplace: Mapped[Optional[str]]
-    price: Mapped[Optional[int]]  # цена только в рублях
+    price: Mapped[Optional[str]]
+    photo: Mapped[Optional[str]]
+    # TODO: поле забронировано_пользователем
 
     wish_list: Mapped["WishListModel"] = relationship(
         back_populates="wishes"
