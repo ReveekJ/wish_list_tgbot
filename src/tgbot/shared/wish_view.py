@@ -1,5 +1,3 @@
-from typing import Callable
-
 from aiogram.fsm.state import State
 from aiogram_dialog import Window
 from aiogram_dialog.widgets.kbd import Keyboard
