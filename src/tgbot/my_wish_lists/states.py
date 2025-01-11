@@ -10,9 +10,10 @@ class MyWishListSG(StatesGroup):
     delete_wish = State()
 
 
-class AddWishSG(StatesGroup):
+class CreateWishSG(StatesGroup):
     name = State()
     photos = State()
     description = State()
     link_to_marketplace = State()
     price = State()
+    preview = State()
