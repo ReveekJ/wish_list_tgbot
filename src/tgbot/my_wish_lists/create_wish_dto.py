@@ -14,6 +14,8 @@ class CreateWishSchema(BaseModel):
     link_to_marketplace: Optional[str] = None
     price: Optional[int] = None
 
+    edit_mode: bool = False
+
 
 class CreateWishDTO(DialogDataDTO):
     @property

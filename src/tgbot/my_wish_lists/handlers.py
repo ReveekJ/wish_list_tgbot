@@ -1,4 +1,5 @@
 from aiogram import Bot
+from aiogram.fsm.state import State
 from aiogram.types import CallbackQuery, Message
 from aiogram_dialog import DialogManager
 from aiogram_dialog.widgets.input import MessageInput
@@ -10,6 +11,14 @@ from src.db.wishes.schemas import Wish
 from src.tgbot.my_wish_lists.create_wish_dto import CreateWishDTO
 from src.tgbot.my_wish_lists.my_wish_list_dto import MyWishListsDTO
 from src.tgbot.my_wish_lists.states import MyWishListSG, CreateWishSG
+from src.utils.abstract_dialog_data_dto import DialogDataDTO
+
+
+async def go_to_state_if_edit_mode(dto: DialogDataDTO, state_if_not_edit_mode: State, state_if_edit_mode: State, dialog_manager: DialogManager):
+    if dto.data.edit_mode:
+        await dialog_manager.switch_to(state_if_edit_mode)
+    else:
+        await dialog_manager.switch_to(state_if_not_edit_mode)
 
 
 async def wish_list_click_handler(callback: CallbackQuery, widget: Button, dialog_manager: DialogManager, *args, **kwargs):
@@ -42,7 +51,7 @@ async def save_name(message: Message, widget: MessageInput, dialog_manager: Dial
     dto.data.name = message.text
     dto.save_to_dialog_manager(dialog_manager)
 
-    await dialog_manager.switch_to(CreateWishSG.photos)
+    await go_to_state_if_edit_mode(dto, CreateWishSG.photos, CreateWishSG.preview, dialog_manager)
 
 
 async def save_photos(message: Message, widget: MessageInput, dialog_manager: DialogManager, *args, **kwargs):
@@ -53,11 +62,11 @@ async def save_photos(message: Message, widget: MessageInput, dialog_manager: Di
     path = PATH_TO_WISH_IMAGES + file_id + '.png'
     await message.bot.download(file_id, destination=path)
 
-    dto.data.photos.append(path)
+    dto.data.photos = [path]  # на самом деле список здесь не обязателен, но я его оставил, чтобы возможно в будущем сделать альбомы
     dto.save_to_dialog_manager(dialog_manager)
 
     # TODO: научить его принимать альбомы фото
-    await dialog_manager.switch_to(CreateWishSG.description)
+    await go_to_state_if_edit_mode(dto, CreateWishSG.description, CreateWishSG.preview, dialog_manager)
 
 
 async def save_description(message: Message, widget: MessageInput, dialog_manager: DialogManager, *args, **kwargs):
@@ -65,7 +74,7 @@ async def save_description(message: Message, widget: MessageInput, dialog_manage
     dto.data.description = message.text
     dto.save_to_dialog_manager(dialog_manager)
 
-    await dialog_manager.switch_to(CreateWishSG.link_to_marketplace)
+    await go_to_state_if_edit_mode(dto, CreateWishSG.link_to_marketplace, CreateWishSG.preview, dialog_manager)
 
 
 async def save_link_to_marketplace(message: Message, widget: MessageInput, dialog_manager: DialogManager, *args, **kwargs):
@@ -73,7 +82,7 @@ async def save_link_to_marketplace(message: Message, widget: MessageInput, dialo
     dto.data.link_to_marketplace = message.text
     dto.save_to_dialog_manager(dialog_manager)
 
-    await dialog_manager.switch_to(CreateWishSG.price)
+    await go_to_state_if_edit_mode(dto, CreateWishSG.price, CreateWishSG.preview, dialog_manager)
 
 
 async def save_price(message: Message, widget: MessageInput, dialog_manager: DialogManager, *args, **kwargs):
@@ -114,3 +123,9 @@ async def go_to_create_wish(callback: CallbackQuery, widget: Button, dialog_mana
     dto = MyWishListsDTO(dialog_manager)
 
     await dialog_manager.start(CreateWishSG.name, data={'wish_list_id': dto.data.selected_wish_list_id})
+
+
+async def set_edit_mode(callback: CallbackQuery, widget: Button, dialog_manager: DialogManager, *args, **kwargs):
+    dto = CreateWishDTO(dialog_manager)
+    dto.data.edit_mode = True
+    dto.save_to_dialog_manager(dialog_manager)

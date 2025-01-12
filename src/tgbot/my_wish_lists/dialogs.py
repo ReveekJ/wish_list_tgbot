@@ -2,7 +2,6 @@ from aiogram.enums import ContentType
 from aiogram_dialog import Dialog, Window
 from aiogram_dialog.widgets.input import MessageInput
 from aiogram_dialog.widgets.kbd import ScrollingGroup, Select, Cancel, SwitchTo, Button
-from aiogram_dialog.widgets.media import DynamicMedia
 from aiogram_dialog.widgets.text import Format
 
 from src.custom_widgets.custom_back_button import BackButton
@@ -11,7 +10,7 @@ from src.tgbot.my_wish_lists.getters import wish_lists_getter, wishes_getter, wi
     wish_preview_getter_on_edit_getter
 from src.tgbot.my_wish_lists.handlers import wish_list_click_handler, wish_select_handler, delete_wish, \
     save_name, save_photos, save_description, save_link_to_marketplace, save_price, on_start_create_wish_dialog, \
-    create_wish_handler, go_to_create_wish
+    create_wish_handler, go_to_create_wish, set_edit_mode
 from src.tgbot.my_wish_lists.states import MyWishListSG, CreateWishSG
 from src.tgbot.shared.wish_view import WishView
 
@@ -183,6 +182,36 @@ create_wish_dialog = Dialog(
         state=CreateWishSG.price
     ),
     WishView.preview_wish(
+        SwitchTo(
+            I18NFormat('edit-name'),
+            id='edit_name',
+            state=CreateWishSG.name,
+            on_click=set_edit_mode
+        ),
+        SwitchTo(
+            I18NFormat('edit-photo'),
+            id='edit_photo',
+            state=CreateWishSG.photos,
+            on_click=set_edit_mode
+        ),
+        SwitchTo(
+            I18NFormat('edit-description'),
+            id='edit_description',
+            state=CreateWishSG.description,
+            on_click=set_edit_mode
+        ),
+        SwitchTo(
+            I18NFormat('edit-link-to-marketplace'),
+            id='edit_link_to_marketplace',
+            state=CreateWishSG.link_to_marketplace,
+            on_click=set_edit_mode
+        ),
+        SwitchTo(
+            I18NFormat('edit-price'),
+            id='edit_price',
+            state=CreateWishSG.price,
+            on_click=set_edit_mode
+        ),
         Cancel(
             I18NFormat('cancel-creation')
         ),
