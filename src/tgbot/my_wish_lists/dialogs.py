@@ -12,6 +12,7 @@ from src.tgbot.my_wish_lists.handlers import wish_list_click_handler, wish_selec
     save_name, save_photos, save_description, save_link_to_marketplace, save_price, on_start_create_wish_dialog, \
     create_wish_handler, go_to_create_wish, set_edit_mode
 from src.tgbot.my_wish_lists.states import MyWishListSG, CreateWishSG
+from src.tgbot.shared.wish_edit_dialog import WishEdit
 from src.tgbot.shared.wish_view import WishView
 
 my_wish_lists_dialog = Dialog(
@@ -109,78 +110,11 @@ my_wish_lists_dialog = Dialog(
 )
 
 create_wish_dialog = Dialog(
-    Window(
-        I18NFormat('enter-name'),
-        MessageInput(
-            content_types=ContentType.TEXT,
-            func=save_name
-        ),
-        state=CreateWishSG.name
-    ),
-    Window(
-        I18NFormat('send-photos'),
-        MessageInput(
-            content_types=ContentType.PHOTO,
-            func=save_photos
-        ),
-        SwitchTo(
-            I18NFormat('skip-step'),
-            id='skip_photo',
-            state=CreateWishSG.description
-        ),
-        BackButton(
-            state=CreateWishSG.name
-        ),
-        state=CreateWishSG.photos
-    ),
-    Window(
-        I18NFormat('add-description'),
-        MessageInput(
-            content_types=ContentType.TEXT,
-            func=save_description
-        ),
-        SwitchTo(
-            I18NFormat('skip-step'),
-            id='skip_description',
-            state=CreateWishSG.link_to_marketplace
-        ),
-        BackButton(
-            state=CreateWishSG.photos
-        ),
-        state=CreateWishSG.description
-    ),
-    Window(
-        I18NFormat('add-link-to-marketplace'),
-        MessageInput(
-            content_types=ContentType.TEXT,
-            func=save_link_to_marketplace
-        ),
-        SwitchTo(
-            I18NFormat('skip-step'),
-            id='skip_link',
-            state=CreateWishSG.price
-        ),
-        BackButton(
-            state=CreateWishSG.description
-        ),
-        state=CreateWishSG.link_to_marketplace
-    ),
-    Window(
-        I18NFormat('add-price'),
-        MessageInput(
-            content_types=ContentType.TEXT,
-            func=save_price
-        ),
-        SwitchTo(
-            I18NFormat('skip-step'),
-            id='skip_price',
-            state=CreateWishSG.preview
-        ),
-        BackButton(
-            state=CreateWishSG.link_to_marketplace
-        ),
-        state=CreateWishSG.price
-    ),
+    WishEdit.name_window(handler=save_name, state=CreateWishSG.name),
+    WishEdit.photo_window(handler=save_photos, state=CreateWishSG.photos),
+    WishEdit.description_window(handler=save_description, state=CreateWishSG.description),
+    WishEdit.link_window(handler=save_link_to_marketplace, state=CreateWishSG.link_to_marketplace),
+    WishEdit.price_window(handler=save_price, state=CreateWishSG.price),
     WishView.preview_wish(
         SwitchTo(
             I18NFormat('edit-name'),
