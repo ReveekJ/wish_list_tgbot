@@ -7,10 +7,10 @@ from aiogram_dialog.widgets.kbd import Button
 from src.config import PATH_TO_WISH_IMAGES
 from src.db.wishes.crud import WishCRUD
 from src.db.wishes.schemas import Wish
-from src.tgbot.my_wish_lists.dto.create_wish_dto import CreateWishDTO
-from src.tgbot.my_wish_lists.dto.edit_wish_dto import EditWishDTO
-from src.tgbot.my_wish_lists.dto.my_wish_list_dto import MyWishListsDTO
-from src.tgbot.my_wish_lists.states import MyWishListSG, CreateWishSG, EditWishSG
+from src.tgbot.my_wish_lists.wishes.dto.create_wish_dto import CreateWishDTO
+from src.tgbot.my_wish_lists.wishes.dto.edit_wish_dto import EditWishDTO
+from src.tgbot.my_wish_lists.wishes.dto.my_wish_list_dto import MyWishListsDTO
+from src.tgbot.my_wish_lists.wishes.states import MyWishListSG, CreateWishSG, EditWishSG
 from src.utils.abstract_dialog_data_dto import DialogDataDTO
 
 

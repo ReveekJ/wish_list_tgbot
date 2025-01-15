@@ -3,7 +3,7 @@ from aiogram_dialog.widgets.kbd import Start
 
 from src.custom_widgets.i18n_format import I18NFormat
 from src.tgbot.main_menu.states import MainMenuSG
-from src.tgbot.my_wish_lists.states import MyWishListSG
+from src.tgbot.my_wish_lists.wishes.states import MyWishListSG
 
 main_dialog = Dialog(
     Window(

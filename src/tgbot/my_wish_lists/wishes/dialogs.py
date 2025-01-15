@@ -4,14 +4,14 @@ from aiogram_dialog.widgets.text import Format
 
 from src.custom_widgets.custom_back_button import BackButton
 from src.custom_widgets.i18n_format import I18NFormat
-from src.tgbot.my_wish_lists.getters import wish_lists_getter, wishes_getter, wish_preview_on_creation_getter, \
+from src.tgbot.my_wish_lists.wishes.getters import wish_lists_getter, wishes_getter, wish_preview_on_creation_getter, \
     wish_preview_getter_on_edit_getter
-from src.tgbot.my_wish_lists.handlers import wish_list_click_handler, wish_select_handler, delete_wish, \
+from src.tgbot.my_wish_lists.wishes.handlers import wish_list_click_handler, wish_select_handler, delete_wish, \
     save_name, save_photos, save_description, save_link_to_marketplace, save_price, on_start_create_wish_dialog, \
     create_wish_handler, go_to_create_wish, set_edit_mode, edit_name, edit_price, edit_link, edit_description, \
     edit_photo, on_start_edit_wish_dialog, go_to_edit_name, go_to_edit_photo, go_to_edit_description, go_to_edit_link, \
     go_to_edit_price
-from src.tgbot.my_wish_lists.states import MyWishListSG, CreateWishSG, EditWishSG
+from src.tgbot.my_wish_lists.wishes.states import MyWishListSG, CreateWishSG, EditWishSG
 from src.tgbot.shared.wish_edit_dialog import WishEdit
 from src.tgbot.shared.wish_view import WishView
 
