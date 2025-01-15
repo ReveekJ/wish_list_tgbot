@@ -4,7 +4,7 @@ from aiogram.enums import ContentType
 from aiogram.fsm.state import State
 from aiogram_dialog import Window
 from aiogram_dialog.widgets.input import MessageInput, MessageHandlerFunc
-from aiogram_dialog.widgets.kbd import Keyboard, SwitchTo, Back, Next
+from aiogram_dialog.widgets.kbd import Keyboard, Back, Next
 from aiogram_dialog.widgets.utils import GetterVariant
 from aiogram_dialog.widgets.widget_event import WidgetEventProcessor
 
@@ -43,12 +43,7 @@ class WishEdit:
                 content_types=ContentType.PHOTO,
                 func=handler
             ),
-            Next(
-                I18NFormat('skip-step'),
-            ),
-            Back(
-                I18NFormat('back')
-            ),
+            *custom_buttons,
             getter=getter,
             state=state
         )
@@ -65,12 +60,6 @@ class WishEdit:
             MessageInput(
                 content_types=ContentType.TEXT,
                 func=handler
-            ),
-            Next(
-                I18NFormat('skip-step'),
-            ),
-            Back(
-                I18NFormat('back')
             ),
             *custom_buttons,
             getter=getter,
@@ -90,12 +79,6 @@ class WishEdit:
                 content_types=ContentType.TEXT,
                 func=handler
             ),
-            Next(
-                I18NFormat('skip-step'),
-            ),
-            Back(
-                I18NFormat('back')
-            ),
             *custom_buttons,
             getter=getter,
             state=state
@@ -114,12 +97,7 @@ class WishEdit:
                 content_types=ContentType.TEXT,
                 func=handler
             ),
-            Next(
-                I18NFormat('skip-step'),
-            ),
-            Back(
-                I18NFormat('back')
-            ),
+
             *custom_buttons,
             getter=getter,
             state=state

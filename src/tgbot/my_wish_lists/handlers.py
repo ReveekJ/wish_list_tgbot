@@ -1,4 +1,3 @@
-from aiogram import Bot
 from aiogram.fsm.state import State
 from aiogram.types import CallbackQuery, Message
 from aiogram_dialog import DialogManager
@@ -8,9 +7,10 @@ from aiogram_dialog.widgets.kbd import Button
 from src.config import PATH_TO_WISH_IMAGES
 from src.db.wishes.crud import WishCRUD
 from src.db.wishes.schemas import Wish
-from src.tgbot.my_wish_lists.create_wish_dto import CreateWishDTO
-from src.tgbot.my_wish_lists.my_wish_list_dto import MyWishListsDTO
-from src.tgbot.my_wish_lists.states import MyWishListSG, CreateWishSG
+from src.tgbot.my_wish_lists.dto.create_wish_dto import CreateWishDTO
+from src.tgbot.my_wish_lists.dto.edit_wish_dto import EditWishDTO
+from src.tgbot.my_wish_lists.dto.my_wish_list_dto import MyWishListsDTO
+from src.tgbot.my_wish_lists.states import MyWishListSG, CreateWishSG, EditWishSG
 from src.utils.abstract_dialog_data_dto import DialogDataDTO
 
 
@@ -129,3 +129,87 @@ async def set_edit_mode(callback: CallbackQuery, widget: Button, dialog_manager:
     dto = CreateWishDTO(dialog_manager)
     dto.data.edit_mode = True
     dto.save_to_dialog_manager(dialog_manager)
+
+
+async def on_start_edit_wish_dialog(start_data: dict, dialog_manager: DialogManager, *args, **kwargs):
+    if start_data.get('wish_id') is None:
+        raise ValueError('On start dialog you should specify wish_id in start_data')
+
+    dto = EditWishDTO(dialog_manager)
+    dto.data.wish_id = start_data.get('wish_id')
+    dto.save_to_dialog_manager(dialog_manager)
+
+
+async def go_to_edit_name(callback: CallbackQuery, widget: Button, dialog_manager: DialogManager, *args, **kwargs):
+    dto = MyWishListsDTO(dialog_manager)
+    await dialog_manager.start(EditWishSG.name, data={'wish_id': dto.data.selected_wish})
+
+
+async def edit_name(message: Message, widget: MessageInput, dialog_manager: DialogManager, *args, **kwargs):
+    dto = EditWishDTO(dialog_manager)
+
+    with WishCRUD() as crud:
+        crud.update(dto.data.wish_id, {'name': message.text})
+
+    await dialog_manager.done()
+
+
+async def go_to_edit_photo(callback: CallbackQuery, widget: Button, dialog_manager: DialogManager, *args, **kwargs):
+    dto = MyWishListsDTO(dialog_manager)
+    await dialog_manager.start(EditWishSG.photos, data={'wish_id': dto.data.selected_wish})
+
+
+async def edit_photo(message: Message, widget: MessageInput, dialog_manager: DialogManager, *args, **kwargs):
+    dto = EditWishDTO(dialog_manager)
+
+    # сохраняем фото
+    file_id = message.photo[-1].file_id
+    path = PATH_TO_WISH_IMAGES + file_id + '.png'
+    await message.bot.download(file_id, destination=path)
+
+    with WishCRUD() as crud:
+        crud.update(dto.data.wish_id, {'photo': path})
+
+    await dialog_manager.done()
+
+
+async def go_to_edit_description(callback: CallbackQuery, widget: Button, dialog_manager: DialogManager, *args, **kwargs):
+    dto = MyWishListsDTO(dialog_manager)
+    await dialog_manager.start(EditWishSG.description, data={'wish_id': dto.data.selected_wish})
+
+
+async def edit_description(message: Message, widget: MessageInput, dialog_manager: DialogManager, *args, **kwargs):
+    dto = EditWishDTO(dialog_manager)
+
+    with WishCRUD() as crud:
+        crud.update(dto.data.wish_id, {'description': message.text})
+
+    await dialog_manager.done()
+
+
+async def go_to_edit_link(callback: CallbackQuery, widget: Button, dialog_manager: DialogManager, *args, **kwargs):
+    dto = MyWishListsDTO(dialog_manager)
+    await dialog_manager.start(EditWishSG.link_to_marketplace, data={'wish_id': dto.data.selected_wish})
+
+
+async def edit_link(message: Message, widget: MessageInput, dialog_manager: DialogManager, *args, **kwargs):
+    dto = EditWishDTO(dialog_manager)
+
+    with WishCRUD() as crud:
+        crud.update(dto.data.wish_id, {'link_to_marketplace': message.text})
+
+    await dialog_manager.done()
+
+
+async def go_to_edit_price(callback: CallbackQuery, widget: Button, dialog_manager: DialogManager, *args, **kwargs):
+    dto = MyWishListsDTO(dialog_manager)
+    await dialog_manager.start(EditWishSG.price, data={'wish_id': dto.data.selected_wish})
+
+
+async def edit_price(message: Message, widget: MessageInput, dialog_manager: DialogManager, *args, **kwargs):
+    dto = EditWishDTO(dialog_manager)
+
+    with WishCRUD() as crud:
+        crud.update(dto.data.wish_id, {'price': message.text})
+
+    await dialog_manager.done()
