@@ -4,7 +4,7 @@ from aiogram.enums import ContentType
 from aiogram.fsm.state import State
 from aiogram_dialog import Window
 from aiogram_dialog.widgets.input import MessageInput, MessageHandlerFunc
-from aiogram_dialog.widgets.kbd import Keyboard, Back, Next
+from aiogram_dialog.widgets.kbd import Keyboard
 from aiogram_dialog.widgets.utils import GetterVariant
 from aiogram_dialog.widgets.widget_event import WidgetEventProcessor
 

@@ -9,8 +9,7 @@ from src.db.wishes.crud import WishCRUD
 from src.db.wishes.schemas import Wish
 from src.tgbot.my_wish_lists.wishes.dto.create_wish_dto import CreateWishDTO
 from src.tgbot.my_wish_lists.wishes.dto.edit_wish_dto import EditWishDTO
-from src.tgbot.my_wish_lists.wishes.dto.my_wish_list_dto import MyWishListsDTO
-from src.tgbot.my_wish_lists.wishes.states import MyWishListSG, CreateWishSG, EditWishSG
+from src.tgbot.my_wish_lists.wishes.states import CreateWishSG
 from src.utils.abstract_dialog_data_dto import DialogDataDTO
 
 
@@ -19,31 +18,6 @@ async def go_to_state_if_edit_mode(dto: DialogDataDTO, state_if_not_edit_mode: S
         await dialog_manager.switch_to(state_if_edit_mode)
     else:
         await dialog_manager.switch_to(state_if_not_edit_mode)
-
-
-async def wish_list_click_handler(callback: CallbackQuery, widget: Button, dialog_manager: DialogManager, *args, **kwargs):
-    dto = MyWishListsDTO(dialog_manager)
-    dto.data.selected_wish_list_id = int(callback.data.split(':')[-1])
-    dto.save_to_dialog_manager(dialog_manager)
-
-    await dialog_manager.switch_to(MyWishListSG.action_in_wish_list)
-
-
-async def wish_select_handler(callback: CallbackQuery, widget: Button, dialog_manager: DialogManager, *args, **kwargs):
-    dto = MyWishListsDTO(dialog_manager)
-    dto.data.selected_wish = int(callback.data.split(':')[-1])
-    dto.save_to_dialog_manager(dialog_manager)
-
-    await dialog_manager.switch_to(MyWishListSG.action_with_wish)
-
-
-async def delete_wish(callback: CallbackQuery, widget: Button, dialog_manager: DialogManager, *args, **kwargs):
-    dto = MyWishListsDTO(dialog_manager)
-
-    with WishCRUD() as crud:
-        crud.delete(dto.data.selected_wish)
-
-    await dialog_manager.switch_to(MyWishListSG.list_of_wishes)
 
 
 async def save_name(message: Message, widget: MessageInput, dialog_manager: DialogManager, *args, **kwargs):
@@ -119,12 +93,6 @@ async def on_start_create_wish_dialog(start_data: dict, dialog_manager: DialogMa
     dto.save_to_dialog_manager(dialog_manager)
 
 
-async def go_to_create_wish(callback: CallbackQuery, widget: Button, dialog_manager: DialogManager, *args, **kwargs):
-    dto = MyWishListsDTO(dialog_manager)
-
-    await dialog_manager.start(CreateWishSG.name, data={'wish_list_id': dto.data.selected_wish_list_id})
-
-
 async def set_edit_mode(callback: CallbackQuery, widget: Button, dialog_manager: DialogManager, *args, **kwargs):
     dto = CreateWishDTO(dialog_manager)
     dto.data.edit_mode = True
@@ -140,11 +108,6 @@ async def on_start_edit_wish_dialog(start_data: dict, dialog_manager: DialogMana
     dto.save_to_dialog_manager(dialog_manager)
 
 
-async def go_to_edit_name(callback: CallbackQuery, widget: Button, dialog_manager: DialogManager, *args, **kwargs):
-    dto = MyWishListsDTO(dialog_manager)
-    await dialog_manager.start(EditWishSG.name, data={'wish_id': dto.data.selected_wish})
-
-
 async def edit_name(message: Message, widget: MessageInput, dialog_manager: DialogManager, *args, **kwargs):
     dto = EditWishDTO(dialog_manager)
 
@@ -152,11 +115,6 @@ async def edit_name(message: Message, widget: MessageInput, dialog_manager: Dial
         crud.update(dto.data.wish_id, {'name': message.text})
 
     await dialog_manager.done()
-
-
-async def go_to_edit_photo(callback: CallbackQuery, widget: Button, dialog_manager: DialogManager, *args, **kwargs):
-    dto = MyWishListsDTO(dialog_manager)
-    await dialog_manager.start(EditWishSG.photos, data={'wish_id': dto.data.selected_wish})
 
 
 async def edit_photo(message: Message, widget: MessageInput, dialog_manager: DialogManager, *args, **kwargs):
@@ -173,11 +131,6 @@ async def edit_photo(message: Message, widget: MessageInput, dialog_manager: Dia
     await dialog_manager.done()
 
 
-async def go_to_edit_description(callback: CallbackQuery, widget: Button, dialog_manager: DialogManager, *args, **kwargs):
-    dto = MyWishListsDTO(dialog_manager)
-    await dialog_manager.start(EditWishSG.description, data={'wish_id': dto.data.selected_wish})
-
-
 async def edit_description(message: Message, widget: MessageInput, dialog_manager: DialogManager, *args, **kwargs):
     dto = EditWishDTO(dialog_manager)
 
@@ -187,11 +140,6 @@ async def edit_description(message: Message, widget: MessageInput, dialog_manage
     await dialog_manager.done()
 
 
-async def go_to_edit_link(callback: CallbackQuery, widget: Button, dialog_manager: DialogManager, *args, **kwargs):
-    dto = MyWishListsDTO(dialog_manager)
-    await dialog_manager.start(EditWishSG.link_to_marketplace, data={'wish_id': dto.data.selected_wish})
-
-
 async def edit_link(message: Message, widget: MessageInput, dialog_manager: DialogManager, *args, **kwargs):
     dto = EditWishDTO(dialog_manager)
 
@@ -199,11 +147,6 @@ async def edit_link(message: Message, widget: MessageInput, dialog_manager: Dial
         crud.update(dto.data.wish_id, {'link_to_marketplace': message.text})
 
     await dialog_manager.done()
-
-
-async def go_to_edit_price(callback: CallbackQuery, widget: Button, dialog_manager: DialogManager, *args, **kwargs):
-    dto = MyWishListsDTO(dialog_manager)
-    await dialog_manager.start(EditWishSG.price, data={'wish_id': dto.data.selected_wish})
 
 
 async def edit_price(message: Message, widget: MessageInput, dialog_manager: DialogManager, *args, **kwargs):

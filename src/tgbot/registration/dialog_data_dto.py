@@ -1,5 +1,5 @@
 import datetime
-from typing import Optional, Type
+from typing import Optional
 
 from aiogram_dialog import DialogManager
 from pydantic import BaseModel
