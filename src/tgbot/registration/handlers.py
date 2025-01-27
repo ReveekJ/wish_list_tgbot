@@ -27,14 +27,11 @@ async def gender_select_handler(callback: CallbackQuery, widget: Button, dialog_
 
     # сохранить инфу в бд
     with UserCRUD() as crud:
-        user_first_name = callback.from_user.first_name if callback.from_user.first_name is not None else ''
-        user_last_name = callback.from_user.last_name if callback.from_user.last_name is not None else ''
-
         crud.create(
             User(
                 id=callback.from_user.id,
                 username=callback.from_user.username,
-                name=f'{user_first_name} {user_last_name}',
+                name=callback.from_user.full_name,
                 birthdate=dto.data.selected_birthdate,
                 gender=dto.data.gender,
             )
