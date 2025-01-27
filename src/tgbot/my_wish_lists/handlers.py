@@ -3,9 +3,16 @@ from aiogram_dialog import DialogManager
 from aiogram_dialog.widgets.kbd import Button
 
 from src.db.wishes.crud import WishCRUD
+from src.tgbot.my_wish_lists.members.states import MembersSG
 from src.tgbot.my_wish_lists.states import MyWishListSG
 from src.tgbot.my_wish_lists.wishes.dto.my_wish_list_dto import MyWishListsDTO
 from src.tgbot.my_wish_lists.wishes.states import CreateWishSG, EditWishSG
+
+
+async def go_to_members(callback: CallbackQuery, widget: Button, dialog_manager: DialogManager, *args, **kwargs):
+    dto = MyWishListsDTO(dialog_manager)
+
+    await dialog_manager.start(MembersSG.list_of_members, data={'wish_list_id': dto.data.selected_wish_list_id})
 
 
 async def wish_list_click_handler(callback: CallbackQuery, widget: Button, dialog_manager: DialogManager, *args, **kwargs):

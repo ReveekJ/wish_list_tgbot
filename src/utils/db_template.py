@@ -1,4 +1,3 @@
-from abc import ABC, abstractmethod
 from typing import Optional, Type, List, Dict, Any, TypeVar
 
 from pydantic import BaseModel, Field

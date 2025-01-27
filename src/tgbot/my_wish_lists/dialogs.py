@@ -6,7 +6,8 @@ from src.custom_widgets.custom_back_button import BackButton
 from src.custom_widgets.i18n_format import I18NFormat
 from src.tgbot.my_wish_lists.getter import wish_lists_getter, wishes_getter, wish_preview_getter_on_edit_getter
 from src.tgbot.my_wish_lists.handlers import wish_list_click_handler, wish_select_handler, go_to_create_wish, \
-    go_to_edit_name, delete_wish, go_to_edit_link, go_to_edit_price, go_to_edit_description, go_to_edit_photo
+    go_to_edit_name, delete_wish, go_to_edit_link, go_to_edit_price, go_to_edit_description, go_to_edit_photo, \
+    go_to_members
 from src.tgbot.my_wish_lists.states import MyWishListSG
 from src.tgbot.shared.wish_view import WishView
 
@@ -38,10 +39,10 @@ my_wish_lists_dialog = Dialog(
             id='switch_to_wishes',
             state=MyWishListSG.list_of_wishes
         ),
-        SwitchTo(
+        Button(
             I18NFormat('friends-in-wish-list'),
             id='switch_to_members',
-            state=MyWishListSG.list_of_members
+            on_click=go_to_members
         ),
         BackButton(
             state=MyWishListSG.list_of_wish_lists,
