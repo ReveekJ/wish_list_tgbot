@@ -28,6 +28,12 @@ class WishListMembersSecondaryCRUD(DBTemplate[WishListMembersModel, WishListMemb
     def update(self, obj_id: int, obj_data: dict) -> Optional[BaseModel]:
         raise NotImplementedError()
 
+    def does_pair_exists(self, user_id: int, wishlist_id: int) -> bool:
+        query = select(self._model_class.user_id).where(self._model_class.user_id == user_id, self._model_class.wishlist_id == wishlist_id)
+        res = self._db.execute(query).scalars().all()
+
+        return True if res else False
+
     def get_wish_lists_id(self, user_id: int) -> List[int]:
         query = select(self._model_class).where(self._model_class.user_id == user_id)
         res: list[WishListMember] = [self._schema_class.model_validate(i, from_attributes=True) for i in self._db.execute(query).scalars().all()]

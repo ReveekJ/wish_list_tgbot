@@ -2,4 +2,4 @@ from pydantic import BaseModel
 
 
 class StartSchema(BaseModel):
-    from_user: int
+    wish_list_id: int
