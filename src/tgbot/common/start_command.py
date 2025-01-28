@@ -4,6 +4,7 @@ import urllib.parse
 from aiogram import Router
 from aiogram.filters import CommandStart
 from aiogram.types import Message, WebAppInfo
+from aiogram.utils.payload import decode_payload
 from aiogram_dialog import DialogManager
 from fluentogram import TranslatorRunner
 
@@ -42,8 +43,7 @@ async def start_command(message: Message, dialog_manager: DialogManager, i18n: T
     if data == "/start":  # пользователь зарегистрирован, просто нажал на кнопку старт
         await dialog_manager.start(MainMenuSG.main_menu)
     else:  #  пользователь зарегистрирован и он перешел по ссылке на вступление в список желаний
-        data = urllib.parse.unquote(data)
-        loaded_json = json.loads(data)
+        loaded_json = json.loads(decode_payload(data))
         loaded_data = StartSchema.model_validate(loaded_json)
         del loaded_json
 
@@ -64,3 +64,4 @@ async def start_command(message: Message, dialog_manager: DialogManager, i18n: T
 
 
         await message.answer(i18n.get('successfully-joined-to-wishlist', wishlist_name=wish_list.name))
+        await dialog_manager.start(MainMenuSG.main_menu)
