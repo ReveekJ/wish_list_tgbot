@@ -14,8 +14,8 @@ class User(BaseModel):
     name: str
     username: str
 
-    own_wish_lists: Optional[list["WishList"]] = []
-    member_wish_lists: Optional[list["WishList"]] = []
+    # own_wish_lists: Optional[list["WishList"]] = []
+    # member_wish_lists: Optional[list["WishList"]] = []
 
     class Config:
         from_attributes = True
