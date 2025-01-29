@@ -7,7 +7,7 @@ from src.utils.abstract_dialog_data_dto import DialogDataDTO
 
 
 class MembersListSchema(BaseModel):
-    wish_list_id: Optional[int] = None
+    wish_list_id: int = None
     selected_member: Optional[int] = None
 
 
