@@ -1,20 +1,19 @@
 import json
-import urllib.parse
 
 from aiogram import Router
 from aiogram.filters import CommandStart
-from aiogram.types import Message, WebAppInfo
+from aiogram.types import Message
 from aiogram.utils.payload import decode_payload
-from aiogram_dialog import DialogManager
+from aiogram_dialog import DialogManager, ShowMode
 from fluentogram import TranslatorRunner
 
 from src.db.users.crud import UserCRUD
 from src.db.wish_list_members_secondary.crud import WishListMembersSecondaryCRUD
 from src.db.wish_list_members_secondary.schemas import WishListMember
 from src.db.wish_lists.crud import WishListCRUD
+from src.tgbot.common.start_schema import StartSchema
 from src.tgbot.main_menu.states import MainMenuSG
 from src.tgbot.registration.states import RegistrationSG
-from src.tgbot.common.start_schema import StartSchema
 
 start_router = Router()
 
@@ -22,13 +21,12 @@ start_router = Router()
 @start_router.message(CommandStart())
 async def start_command(message: Message, dialog_manager: DialogManager, i18n: TranslatorRunner):
     data = message.text.split()[-1]
-    # pprint(message.model_dump())
-    print(message.text)
+
     # сбрасываем диалоги
     flag = True
     while flag:
         try:
-            await dialog_manager.done()
+            await dialog_manager.done(show_mode=ShowMode.EDIT)
         except Exception as e:
             flag = False
             print(e)  # TODO: заменить на Exception на нормальную ошибку
