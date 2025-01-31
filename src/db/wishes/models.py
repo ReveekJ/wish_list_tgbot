@@ -17,8 +17,12 @@ class WishModel(Base):
     link_to_marketplace: Mapped[Optional[str]]
     price: Mapped[Optional[str]]
     photo: Mapped[Optional[str]]
-    # TODO: поле забронировано_пользователем
+    is_booked: Mapped[bool] = mapped_column(default=False)
+    booked_by_user_id: Mapped[Optional[BigInteger]] = mapped_column(BigInteger, ForeignKey("users.id"))
 
+    booked_by_user: Mapped[Optional["UserModel"]] = relationship(
+        back_populates='booked_wishes'
+    )
     wish_list: Mapped["WishListModel"] = relationship(
         back_populates="wishes"
     )

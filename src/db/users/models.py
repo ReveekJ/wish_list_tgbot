@@ -1,5 +1,5 @@
 import datetime
-from typing import Optional
+from typing import Optional, List
 
 from sqlalchemy import BigInteger, Enum, Date, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
@@ -24,7 +24,10 @@ class UserModel(Base):
         secondary="wishlist_members",
         back_populates="members"
     )
-
+    booked_wishes: Mapped[Optional[List["WishModel"]]] = relationship(
+        back_populates='booked_by_user'
+    )
 
 
 from src.db.wish_lists.models import WishListModel
+from src.db.wishes.models import WishModel
