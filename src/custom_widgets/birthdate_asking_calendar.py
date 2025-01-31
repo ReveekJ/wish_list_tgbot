@@ -32,7 +32,7 @@ class BirthdateAskingCalendarMonthView(CalendarMonthView):
 class BirthdateAskingCalendarDaysView(CalendarDaysView):
     def __init__(self, callback_generator: CallbackGenerator):
         super().__init__(callback_generator,
-                         zoom_out_text=I18NFormat('zoom-out-text'),
+                         zoom_out_text=I18NFormat('back'),
                          header_text=Format("🗓 {date:%B}"),
                          today_text=Format('{date:%d}'))
 
