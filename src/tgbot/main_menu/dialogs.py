@@ -2,6 +2,7 @@ from aiogram_dialog import Dialog, Window
 from aiogram_dialog.widgets.kbd import Start
 
 from src.custom_widgets.i18n_format import I18NFormat
+from src.tgbot.friends_wish_list.states import FriendsWishListSG
 from src.tgbot.main_menu.states import MainMenuSG
 from src.tgbot.my_wish_lists.states import MyWishListSG
 
@@ -13,11 +14,11 @@ main_dialog = Dialog(
             id='my_wish_lists',
             state=MyWishListSG.list_of_wish_lists
         ),
-        # Start(
-        #     I18NFormat('my-friends'),
-        #     id='my_friends',
-        #     state=
-        # ),
+        Start(
+            I18NFormat('my-friends'),
+            id='my_friends',
+            state=FriendsWishListSG.friends_list
+        ),
         state=MainMenuSG.main_menu
     )
 )

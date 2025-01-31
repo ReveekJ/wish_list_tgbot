@@ -13,7 +13,7 @@ registration_dialog = Dialog(
         I18NFormat('ask-birthdate'),
         BirthdateAskingCalendar(
             id='test',
-            on_click=birthdate_select_handler
+            on_click=birthdate_select_handler,
         ),
         state=RegistrationSG.birthdate
     ),
