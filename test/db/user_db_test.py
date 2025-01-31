@@ -19,8 +19,6 @@ def sample_user():
         username='bbb',
         birthdate=datetime.date.today(),
         gender=GenderEnum.MALE,
-        own_wish_lists=[],
-        member_wish_lists=[],
     )
     return user
 
