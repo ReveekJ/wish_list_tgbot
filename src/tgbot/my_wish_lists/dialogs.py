@@ -1,9 +1,10 @@
 from aiogram_dialog import Dialog, Window
-from aiogram_dialog.widgets.kbd import ScrollingGroup, Select, Cancel, SwitchTo, Button
+from aiogram_dialog.widgets.kbd import ScrollingGroup, Select, Cancel, SwitchTo, Button, Start
 from aiogram_dialog.widgets.text import Format
 
 from src.custom_widgets.custom_back_button import BackButton
 from src.custom_widgets.i18n_format import I18NFormat
+from src.tgbot.my_wish_lists.create_wish_list.states import CreateWishListSG
 from src.tgbot.my_wish_lists.getter import wish_lists_getter, wishes_getter, wish_preview_getter_on_edit_getter
 from src.tgbot.my_wish_lists.handlers import wish_list_click_handler, wish_select_handler, go_to_create_wish, \
     go_to_edit_name, delete_wish, go_to_edit_link, go_to_edit_price, go_to_edit_description, go_to_edit_photo, \
@@ -25,6 +26,11 @@ my_wish_lists_dialog = Dialog(
             width=1,
             height=8,
             id='my_wish_lists_scrolling_group',
+        ),
+        Start(
+            I18NFormat('go-to-create-wish-list'),
+            id='go_to_create_wish_dialog',
+            state=CreateWishListSG.name
         ),
         Cancel(
             I18NFormat('back')

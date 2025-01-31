@@ -23,3 +23,9 @@ class WishListCRUD(DBTemplate[WishListModel, WishList]):
             return [self._schema_class.model_validate(i, from_attributes=True) for i in res]
         except AttributeError:  # возникает, когда нет списков
             return []
+
+    def does_wish_list_exist_by_user_id_n_wish_list_name(self, user_id: int, wish_list_name: str) -> bool:
+        query = select(self._model_class).where(self._model_class.owner_id == user_id, self._model_class.name == wish_list_name)
+        res = self._db.execute(query).scalars().all()
+
+        return True if res else False
