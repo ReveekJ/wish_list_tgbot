@@ -46,5 +46,8 @@ async def get_wish_view(event_from_user: AiogramUser, dialog_manager: DialogMana
         'photos': MediaAttachment(type=ContentType.PHOTO, path=wish.photo) if wish.photo is not None else None,
         'link': wish.link_to_marketplace,
         'price': wish.price,
-        'description': wish.description
+        'description': wish.description,
+        'show_reserve_btn': not wish.is_booked,
+        'show_cancel_reserve_btn': True if wish.is_booked and wish.booked_by_user_id == event_from_user.id else False,
+        'booked_true': wish.is_booked if wish.is_booked else None
     }

@@ -5,12 +5,18 @@ from aiogram_dialog.widgets.media import DynamicMedia
 from aiogram_dialog.widgets.text import Format
 from aiogram_dialog.widgets.utils import GetterVariant
 
+from src.custom_widgets.i18n_format import I18NFormat
+
 
 class WishView:
     @staticmethod
     def preview_wish(*custom_buttons: Keyboard, getter: GetterVariant, state: State) -> Window:
         return Window(
-            Format('{name}\n'),
+            I18NFormat(
+                'wish-is-booked',
+                when='booked_true'
+            ),
+            Format('\n{name}\n'),
             DynamicMedia(
                 'photos',
                 when='photos'

@@ -6,3 +6,6 @@ class FriendsWishListSG(StatesGroup):
     wish_list = State()
     wish = State()
     wish_view = State()
+
+    reserve_wish = State()
+    cancel_reserve_wish = State()
