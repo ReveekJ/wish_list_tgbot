@@ -5,6 +5,7 @@ from aiogram_dialog.widgets.kbd import Button
 from src.db.wishes.crud import WishCRUD
 from src.tgbot.my_wish_lists.members.states import MembersSG
 from src.tgbot.my_wish_lists.states import MyWishListSG
+from src.tgbot.my_wish_lists.wish_list_settings.states import WishListSettingsSG
 from src.tgbot.my_wish_lists.wishes.dto.my_wish_list_dto import MyWishListsDTO
 from src.tgbot.my_wish_lists.wishes.states import CreateWishSG, EditWishSG
 
@@ -44,6 +45,12 @@ async def go_to_create_wish(callback: CallbackQuery, widget: Button, dialog_mana
     await dialog_manager.start(CreateWishSG.name, data={'wish_list_id': dto.data.selected_wish_list_id})
 
 
+async def go_to_wish_list_settings(callback: CallbackQuery, widget: Button, dialog_manager: DialogManager, *args, **kwargs):
+    dto = MyWishListsDTO(dialog_manager)
+
+    await dialog_manager.start(WishListSettingsSG.select_action, {'wish_list_id': dto.data.selected_wish_list_id})
+
+
 async def go_to_edit_name(callback: CallbackQuery, widget: Button, dialog_manager: DialogManager, *args, **kwargs):
     dto = MyWishListsDTO(dialog_manager)
     await dialog_manager.start(EditWishSG.name, data={'wish_id': dto.data.selected_wish})
@@ -67,3 +74,9 @@ async def go_to_edit_price(callback: CallbackQuery, widget: Button, dialog_manag
     dto = MyWishListsDTO(dialog_manager)
     await dialog_manager.start(EditWishSG.price, data={'wish_id': dto.data.selected_wish})
 
+
+async def on_process_result_when_delete(result_data: dict, dialog_manager: DialogManager, *args, **kwargs):
+    print(result_data)
+    if isinstance(result_data, dict):
+        if result_data.get('is_deleted'):
+            await dialog_manager.done()

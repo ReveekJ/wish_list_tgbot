@@ -31,7 +31,7 @@ friends_wish_list_dialog = Dialog(
         state=FriendsWishListSG.friends_list
     ),
     Window(
-        I18NFormat('select-wish-list'),
+        I18NFormat('friends-select-wish-list'),
         ScrollingGroup(
             Select(
                 Format('{item[1]}'),

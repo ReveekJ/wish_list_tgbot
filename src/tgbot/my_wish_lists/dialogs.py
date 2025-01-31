@@ -8,7 +8,7 @@ from src.tgbot.my_wish_lists.create_wish_list.states import CreateWishListSG
 from src.tgbot.my_wish_lists.getter import wish_lists_getter, wishes_getter, wish_preview_getter_on_edit_getter
 from src.tgbot.my_wish_lists.handlers import wish_list_click_handler, wish_select_handler, go_to_create_wish, \
     go_to_edit_name, delete_wish, go_to_edit_link, go_to_edit_price, go_to_edit_description, go_to_edit_photo, \
-    go_to_members
+    go_to_members, go_to_wish_list_settings, on_process_result_when_delete
 from src.tgbot.my_wish_lists.states import MyWishListSG
 from src.tgbot.shared.wish_view import WishView
 
@@ -49,6 +49,11 @@ my_wish_lists_dialog = Dialog(
             I18NFormat('friends-in-wish-list'),
             id='switch_to_members',
             on_click=go_to_members
+        ),
+        Button(
+            I18NFormat('go-to-wish-list-settings'),
+            id='go_to_wish_settings',
+            on_click=go_to_wish_list_settings
         ),
         BackButton(
             state=MyWishListSG.list_of_wish_lists,
@@ -134,4 +139,5 @@ my_wish_lists_dialog = Dialog(
         ),
         state=MyWishListSG.delete_wish
     ),
+    # on_process_result=on_process_result_when_delete
 )
