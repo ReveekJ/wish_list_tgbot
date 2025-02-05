@@ -76,7 +76,6 @@ async def go_to_edit_price(callback: CallbackQuery, widget: Button, dialog_manag
 
 
 async def on_process_result_when_delete(result_data: dict, dialog_manager: DialogManager, *args, **kwargs):
-    print(result_data)
     if isinstance(result_data, dict):
         if result_data.get('is_deleted'):
             await dialog_manager.done()

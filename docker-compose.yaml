@@ -32,15 +32,27 @@ services:
       - .env
     depends_on:
       - wish_list_db
+      - redis
     networks:
       - app_network
     volumes:
       - wish_images:/usr/project/wish_images
 
+  redis:
+    image: redis:latest
+    container_name: redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - app_network
+
 volumes:
   postgres-data:
   pgadmin-data:
   wish_images:
+  redis_data:
 
 networks:
   app_network:

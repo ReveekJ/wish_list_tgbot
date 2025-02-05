@@ -9,3 +9,4 @@ aiogram_dialog
 uvloop
 aiodns
 fluentogram
+redis

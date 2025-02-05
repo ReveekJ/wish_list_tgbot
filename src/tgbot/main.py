@@ -3,7 +3,7 @@ import asyncio
 from aiogram import Dispatcher, Bot
 from aiogram_dialog import setup_dialogs
 
-from src.config import TOKEN
+from src.config import TOKEN, REDIS_HOST, REDIS_PORT
 from src.tgbot.common import start_command
 from src.tgbot.friends_wish_list.dialogs import friends_wish_list_dialog
 from src.tgbot.main_menu.dialogs import main_dialog
@@ -16,8 +16,13 @@ from src.tgbot.my_wish_lists.wishes.dialogs import create_wish_dialog, edit_wish
 from src.tgbot.registration.dialogs import registration_dialog
 from src.utils.i18n import create_translator_hub
 
+import redis.asyncio as redis
+
 
 async def main():
+    r = redis.Redis(host=REDIS_HOST, port=REDIS_PORT, db=0)
+    await r.flushall(asynchronous=True)
+
     dp = Dispatcher()
     bot = Bot(token=TOKEN)
     translator_hub = create_translator_hub()
