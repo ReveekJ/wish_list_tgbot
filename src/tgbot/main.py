@@ -8,6 +8,7 @@ from src.tgbot.common import start_command
 from src.tgbot.friends_wish_list.dialogs import friends_wish_list_dialog
 from src.tgbot.main_menu.dialogs import main_dialog
 from src.tgbot.middlewares.i18n import TranslatorRunnerMiddleware
+from src.tgbot.middlewares.update_user_data import UpdateUserDataMiddleware
 from src.tgbot.my_wish_lists.create_wish_list.dialogs import create_wish_list_dialog
 from src.tgbot.my_wish_lists.dialogs import my_wish_lists_dialog
 from src.tgbot.my_wish_lists.members.dialogs import members_list_dialog
@@ -41,6 +42,7 @@ async def main():
     )
 
     dp.update.middleware(TranslatorRunnerMiddleware())
+    dp.update.middleware(UpdateUserDataMiddleware())
 
     setup_dialogs(dp)
 
