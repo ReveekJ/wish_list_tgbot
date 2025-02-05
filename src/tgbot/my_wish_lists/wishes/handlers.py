@@ -1,3 +1,5 @@
+import os
+
 from aiogram.fsm.state import State
 from aiogram.types import CallbackQuery, Message
 from aiogram_dialog import DialogManager
@@ -156,3 +158,37 @@ async def edit_price(message: Message, widget: MessageInput, dialog_manager: Dia
         crud.update(dto.data.wish_id, {'price': message.text})
 
     await dialog_manager.done()
+
+
+async def set_none_photo(callback: CallbackQuery, widget: Button, dialog_manager: DialogManager, *args, **kwargs):
+    dto = EditWishDTO(dialog_manager)
+
+    with WishCRUD() as crud:
+        old_wish: Wish = crud.get_obj_by_id(dto.data.wish_id)
+        crud.update(dto.data.wish_id, {'photo': None})
+
+    # удаляем старое фото
+    try:
+        os.remove(old_wish.photo)
+    except Exception as e:
+        print(e)
+
+async def set_none_description(callback: CallbackQuery, widget: Button, dialog_manager: DialogManager, *args, **kwargs):
+    dto = EditWishDTO(dialog_manager)
+
+    with WishCRUD() as crud:
+        crud.update(dto.data.wish_id, {'description': None})
+
+
+async def set_none_link(callback: CallbackQuery, widget: Button, dialog_manager: DialogManager, *args, **kwargs):
+    dto = EditWishDTO(dialog_manager)
+
+    with WishCRUD() as crud:
+        crud.update(dto.data.wish_id, {'link_to_marketplace': None})
+
+
+async def set_none_price(callback: CallbackQuery, widget: Button, dialog_manager: DialogManager, *args, **kwargs):
+    dto = EditWishDTO(dialog_manager)
+
+    with WishCRUD() as crud:
+        crud.update(dto.data.wish_id, {'price': None})

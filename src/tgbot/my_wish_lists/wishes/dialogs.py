@@ -6,7 +6,7 @@ from src.tgbot.my_wish_lists.wishes.getters import wish_preview_on_creation_gett
 from src.tgbot.my_wish_lists.wishes.handlers import save_name, save_photos, save_description, save_link_to_marketplace, \
     save_price, on_start_create_wish_dialog, \
     create_wish_handler, set_edit_mode, edit_name, edit_price, edit_link, edit_description, \
-    edit_photo, on_start_edit_wish_dialog
+    edit_photo, on_start_edit_wish_dialog, set_none_photo, set_none_description, set_none_link, set_none_price
 from src.tgbot.my_wish_lists.wishes.states import CreateWishSG, EditWishSG
 from src.tgbot.shared.wish_edit_dialog import WishEdit
 from src.tgbot.shared.wish_view import WishView
@@ -103,7 +103,7 @@ create_wish_dialog = Dialog(
     ),
     on_start=on_start_create_wish_dialog
 )
-# TODO: добавить кнопку "сделать значение пустым"
+
 edit_wish_dialog = Dialog(
     WishEdit.name_window(
         Cancel(
@@ -114,12 +114,20 @@ edit_wish_dialog = Dialog(
     ),
     WishEdit.photo_window(
         Cancel(
+            I18NFormat('wish-edit-photo-set-none'),
+            on_click=set_none_photo
+        ),
+        Cancel(
             I18NFormat('back')
         ),
         handler=edit_photo,
         state=EditWishSG.photos
     ),
     WishEdit.description_window(
+        Cancel(
+            I18NFormat('wish-edit-description-set-none'),
+            on_click=set_none_description
+        ),
         Cancel(
             I18NFormat('back')
         ),
@@ -128,12 +136,20 @@ edit_wish_dialog = Dialog(
     ),
     WishEdit.link_window(
         Cancel(
+            I18NFormat('wish-edit-link-set-none'),
+            on_click=set_none_link
+        ),
+        Cancel(
             I18NFormat('back')
         ),
         handler=edit_link,
         state=EditWishSG.link_to_marketplace
     ),
     WishEdit.price_window(
+        Cancel(
+            I18NFormat('wish-edit-price-set-none'),
+            on_click=set_none_price
+        ),
         Cancel(
             I18NFormat('back')
         ),
