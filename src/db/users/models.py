@@ -16,6 +16,7 @@ class UserModel(Base):
     gender: Mapped[GenderEnum] = mapped_column(Enum(GenderEnum), nullable=True)
     name: Mapped[Optional[str]]
     username: Mapped[Optional[str]]
+    language_code: Mapped[str]
 
     own_wish_lists: Mapped[Optional[list["WishListModel"]]] = relationship(
         back_populates="owner"

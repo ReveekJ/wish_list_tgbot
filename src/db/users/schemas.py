@@ -13,6 +13,7 @@ class User(BaseModel):
     gender: GenderEnum
     name: str
     username: str
+    language_code: str
 
     # own_wish_lists: Optional[list["WishList"]] = []
     # member_wish_lists: Optional[list["WishList"]] = []

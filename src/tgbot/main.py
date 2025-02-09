@@ -2,8 +2,12 @@ import asyncio
 
 from aiogram import Dispatcher, Bot
 from aiogram_dialog import setup_dialogs
+from nats.js import JetStreamContext
 
 from src.config import TOKEN, REDIS_HOST, REDIS_PORT
+from src.services.notification_manager.publishers.text_messages_publisher import TextMessagesNotificationPublisher
+from src.services.notification_manager.schemas.text_message_schema import TextMessage
+from src.services.utils.start_consumers import start_consumers
 from src.tgbot.common import start_command
 from src.tgbot.friends_wish_list.dialogs import friends_wish_list_dialog
 from src.tgbot.main_menu.dialogs import main_dialog
@@ -18,6 +22,9 @@ from src.tgbot.registration.dialogs import registration_dialog
 from src.utils.i18n import create_translator_hub
 
 import redis.asyncio as redis
+
+from src.utils.nats.nats_connect import connect_to_nats
+from src.utils.nats.nats_migrations import run_nuts_migrations
 
 
 async def main():
@@ -46,7 +53,12 @@ async def main():
 
     setup_dialogs(dp)
 
-    await dp.start_polling(bot, _translator_hub=translator_hub)
+    nc, js = await connect_to_nats('nats://nats:4222')
+    await run_nuts_migrations(js)
+    await asyncio.gather(
+        start_consumers(nc, js, bot, translator_hub),
+        dp.start_polling(bot, _translator_hub=translator_hub),
+    )
 
 
 if __name__ == '__main__':

@@ -34,6 +34,7 @@ async def gender_select_handler(callback: CallbackQuery, widget: Button, dialog_
                 name=callback.from_user.full_name,
                 birthdate=dto.data.selected_birthdate,
                 gender=dto.data.gender,
+                language_code=callback.from_user.language_code
             )
         )
 
