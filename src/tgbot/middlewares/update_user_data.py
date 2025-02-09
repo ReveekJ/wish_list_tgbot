@@ -19,6 +19,9 @@ class UpdateUserDataMiddleware(BaseMiddleware):
 
         with UserCRUD() as crud:
             current_user: User = crud.get_obj_by_id(aiogram_user.id)
+            if not current_user:
+                return await handler(event, data)
+
             new_user = current_user.model_copy()
 
             if aiogram_user.username != current_user.username:
