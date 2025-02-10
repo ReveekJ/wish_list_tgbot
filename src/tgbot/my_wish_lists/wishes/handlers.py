@@ -12,6 +12,8 @@ from src.db.wishes.schemas import Wish
 from src.tgbot.my_wish_lists.wishes.dto.create_wish_dto import CreateWishDTO
 from src.tgbot.my_wish_lists.wishes.dto.edit_wish_dto import EditWishDTO
 from src.tgbot.my_wish_lists.wishes.states import CreateWishSG
+from src.tgbot.my_wish_lists.wishes.utils.publish_notifications_about_create_and_edit_wish import \
+    publish_notifications_about_create_and_edit_wish
 from src.utils.abstract_dialog_data_dto import DialogDataDTO
 
 
@@ -83,6 +85,13 @@ async def create_wish_handler(callback: CallbackQuery, widget: Button, dialog_ma
         )
         crud.create(wish)
 
+    await publish_notifications_about_create_and_edit_wish(
+        mode='create',
+        dialog_manager=dialog_manager,
+        wish=wish,
+        wish_list_id=dto.wish_list_id,
+    )
+
     await dialog_manager.done()
 
 
@@ -114,8 +123,14 @@ async def edit_name(message: Message, widget: MessageInput, dialog_manager: Dial
     dto = EditWishDTO(dialog_manager)
 
     with WishCRUD() as crud:
-        crud.update(dto.data.wish_id, {'name': message.text})
+        wish = crud.update(dto.data.wish_id, {'name': message.text})
 
+    await publish_notifications_about_create_and_edit_wish(
+        mode='edit',
+        dialog_manager=dialog_manager,
+        wish=wish,
+        wish_list_id=wish.wish_list_id,
+    )
     await dialog_manager.done()
 
 
@@ -128,8 +143,14 @@ async def edit_photo(message: Message, widget: MessageInput, dialog_manager: Dia
     await message.bot.download(file_id, destination=path)
 
     with WishCRUD() as crud:
-        crud.update(dto.data.wish_id, {'photo': path})
+        wish = crud.update(dto.data.wish_id, {'photo': path})
 
+    await publish_notifications_about_create_and_edit_wish(
+        mode='edit',
+        dialog_manager=dialog_manager,
+        wish=wish,
+        wish_list_id=wish.wish_list_id,
+    )
     await dialog_manager.done()
 
 
@@ -137,8 +158,14 @@ async def edit_description(message: Message, widget: MessageInput, dialog_manage
     dto = EditWishDTO(dialog_manager)
 
     with WishCRUD() as crud:
-        crud.update(dto.data.wish_id, {'description': message.text})
+        wish = crud.update(dto.data.wish_id, {'description': message.text})
 
+    await publish_notifications_about_create_and_edit_wish(
+        mode='edit',
+        dialog_manager=dialog_manager,
+        wish=wish,
+        wish_list_id=wish.wish_list_id,
+    )
     await dialog_manager.done()
 
 
@@ -146,8 +173,14 @@ async def edit_link(message: Message, widget: MessageInput, dialog_manager: Dial
     dto = EditWishDTO(dialog_manager)
 
     with WishCRUD() as crud:
-        crud.update(dto.data.wish_id, {'link_to_marketplace': message.text})
+        wish = crud.update(dto.data.wish_id, {'link_to_marketplace': message.text})
 
+    await publish_notifications_about_create_and_edit_wish(
+        mode='edit',
+        dialog_manager=dialog_manager,
+        wish=wish,
+        wish_list_id=wish.wish_list_id,
+    )
     await dialog_manager.done()
 
 
@@ -155,8 +188,14 @@ async def edit_price(message: Message, widget: MessageInput, dialog_manager: Dia
     dto = EditWishDTO(dialog_manager)
 
     with WishCRUD() as crud:
-        crud.update(dto.data.wish_id, {'price': message.text})
+        wish = crud.update(dto.data.wish_id, {'price': message.text})
 
+    await publish_notifications_about_create_and_edit_wish(
+        mode='edit',
+        dialog_manager=dialog_manager,
+        wish=wish,
+        wish_list_id=wish.wish_list_id,
+    )
     await dialog_manager.done()
 
 
@@ -165,8 +204,14 @@ async def set_none_photo(callback: CallbackQuery, widget: Button, dialog_manager
 
     with WishCRUD() as crud:
         old_wish: Wish = crud.get_obj_by_id(dto.data.wish_id)
-        crud.update(dto.data.wish_id, {'photo': None})
+        wish = crud.update(dto.data.wish_id, {'photo': None})
 
+    await publish_notifications_about_create_and_edit_wish(
+        mode='edit',
+        dialog_manager=dialog_manager,
+        wish=wish,
+        wish_list_id=wish.wish_list_id,
+    )
     # удаляем старое фото
     try:
         os.remove(old_wish.photo)
@@ -177,18 +222,37 @@ async def set_none_description(callback: CallbackQuery, widget: Button, dialog_m
     dto = EditWishDTO(dialog_manager)
 
     with WishCRUD() as crud:
-        crud.update(dto.data.wish_id, {'description': None})
+        wish = crud.update(dto.data.wish_id, {'description': None})
 
+    await publish_notifications_about_create_and_edit_wish(
+        mode='edit',
+        dialog_manager=dialog_manager,
+        wish=wish,
+        wish_list_id=wish.wish_list_id,
+    )
 
 async def set_none_link(callback: CallbackQuery, widget: Button, dialog_manager: DialogManager, *args, **kwargs):
     dto = EditWishDTO(dialog_manager)
 
     with WishCRUD() as crud:
-        crud.update(dto.data.wish_id, {'link_to_marketplace': None})
+        wish = crud.update(dto.data.wish_id, {'link_to_marketplace': None})
 
+    await publish_notifications_about_create_and_edit_wish(
+        mode='edit',
+        dialog_manager=dialog_manager,
+        wish=wish,
+        wish_list_id=wish.wish_list_id,
+    )
 
 async def set_none_price(callback: CallbackQuery, widget: Button, dialog_manager: DialogManager, *args, **kwargs):
     dto = EditWishDTO(dialog_manager)
 
     with WishCRUD() as crud:
-        crud.update(dto.data.wish_id, {'price': None})
+        wish = crud.update(dto.data.wish_id, {'price': None})
+
+    await publish_notifications_about_create_and_edit_wish(
+        mode='edit',
+        dialog_manager=dialog_manager,
+        wish=wish,
+        wish_list_id=wish.wish_list_id,
+    )

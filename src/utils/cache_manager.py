@@ -1,4 +1,4 @@
-from typing import TypeVar, Type, Optional
+from typing import TypeVar, Type, Optional, Generic
 
 import redis
 from pydantic import BaseModel
@@ -8,7 +8,7 @@ from src.config import REDIS_HOST, REDIS_PORT
 Schema = TypeVar('Schema', bound=BaseModel)
 
 
-class CacheManager:
+class CacheManager(Generic[Schema]):
     def __init__(self, db: int, schema_class: Optional[Type[Schema]] = None):
         self.__cache = redis.Redis(host=REDIS_HOST, port=REDIS_PORT, db=db)
         self.__db = db
@@ -35,20 +35,20 @@ class CacheManager:
     def cache_delete(self, key):
         self.__cache.delete(key)
 
-    def save_cache_from_db(self, id_field_name: str = 'id'):
-        def wrapper(func):
-            def inner(*args, **kwargs):
-                res = func(*args, **kwargs)
+    def save_cache_from_db(self, id_field_name: str = 'id') -> Schema:
+        def wrapper(func) -> Schema:
+            def inner(*args, **kwargs) -> Schema:
+                res: Schema = func(*args, **kwargs)
                 if hasattr(res, id_field_name):
                     self.cache_set(res.id, res)
                 return res
             return inner
         return wrapper
 
-    def reset_cache(self, id_field_name: str = 'id'):
-        def wrapper(func):
-            def inner(*args, **kwargs):
-                res = func(*args, **kwargs)
+    def reset_cache(self, id_field_name: str = 'id') -> Schema:
+        def wrapper(func) -> Schema:
+            def inner(*args, **kwargs) -> Schema:
+                res: Schema = func(*args, **kwargs)
                 try:
                     self.cache_delete(getattr(res, id_field_name))
                 except AttributeError:

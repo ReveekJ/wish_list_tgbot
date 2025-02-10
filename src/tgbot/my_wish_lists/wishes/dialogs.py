@@ -2,7 +2,7 @@ from aiogram_dialog import Dialog
 from aiogram_dialog.widgets.kbd import Cancel, SwitchTo, Button, Back, Next
 
 from src.custom_widgets.i18n_format import I18NFormat
-from src.tgbot.my_wish_lists.wishes.getters import wish_preview_on_creation_getter
+from src.tgbot.my_wish_lists.wishes.getters import wish_preview_on_creation_getter, does_smth_exists_getter
 from src.tgbot.my_wish_lists.wishes.handlers import save_name, save_photos, save_description, save_link_to_marketplace, \
     save_price, on_start_create_wish_dialog, \
     create_wish_handler, set_edit_mode, edit_name, edit_price, edit_link, edit_description, \
@@ -115,46 +115,58 @@ edit_wish_dialog = Dialog(
     WishEdit.photo_window(
         Cancel(
             I18NFormat('wish-edit-photo-set-none'),
-            on_click=set_none_photo
+            id='set_none_wish_photo',
+            on_click=set_none_photo,
+            when='photo'
         ),
         Cancel(
             I18NFormat('back')
         ),
         handler=edit_photo,
-        state=EditWishSG.photos
+        state=EditWishSG.photos,
+        getter=does_smth_exists_getter
     ),
     WishEdit.description_window(
         Cancel(
             I18NFormat('wish-edit-description-set-none'),
-            on_click=set_none_description
+            id='set_none_wish_description',
+            on_click=set_none_description,
+            when='description'
         ),
         Cancel(
             I18NFormat('back')
         ),
         handler=edit_description,
-        state=EditWishSG.description
+        state=EditWishSG.description,
+        getter=does_smth_exists_getter
     ),
     WishEdit.link_window(
         Cancel(
             I18NFormat('wish-edit-link-set-none'),
-            on_click=set_none_link
+            id='set_none_wish_link',
+            on_click=set_none_link,
+            when='link'
         ),
         Cancel(
             I18NFormat('back')
         ),
         handler=edit_link,
-        state=EditWishSG.link_to_marketplace
+        state=EditWishSG.link_to_marketplace,
+        getter=does_smth_exists_getter
     ),
     WishEdit.price_window(
         Cancel(
             I18NFormat('wish-edit-price-set-none'),
-            on_click=set_none_price
+            id='set_none_wish_price',
+            on_click=set_none_price,
+            when='price'
         ),
         Cancel(
             I18NFormat('back')
         ),
         handler=edit_price,
-        state=EditWishSG.price
+        state=EditWishSG.price,
+        getter=does_smth_exists_getter
     ),
     on_start=on_start_edit_wish_dialog,
 )
