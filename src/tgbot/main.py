@@ -4,7 +4,7 @@ import redis.asyncio as redis
 from aiogram import Dispatcher, Bot
 from aiogram_dialog import setup_dialogs
 
-from src.config import TOKEN, REDIS_HOST, REDIS_PORT
+from src.config import TOKEN, REDIS_HOST, REDIS_PORT, REDIS_TASKIQ_DB, REDIS_AIOGRAM_DB, REDIS_USER_SCHEDULES_DB
 from src.services.utils.start_consumers import start_consumers
 from src.tgbot.common import start_command
 from src.tgbot.friends_wish_list.dialogs import friends_wish_list_dialog
@@ -17,14 +17,20 @@ from src.tgbot.my_wish_lists.members.dialogs import members_list_dialog
 from src.tgbot.my_wish_lists.wish_list_settings.dialogs import wish_list_settings_dialog
 from src.tgbot.my_wish_lists.wishes.dialogs import create_wish_dialog, edit_wish_dialog
 from src.tgbot.registration.dialogs import registration_dialog
+from src.tgbot.utils.on_startup import OnStartupActions
 from src.utils.i18n import create_translator_hub
 from src.utils.nats.nats_connect import connect_to_nats
-from src.utils.nats.nats_migrations import run_nuts_migrations
 
 
 async def main():
-    r = redis.Redis(host=REDIS_HOST, port=REDIS_PORT, db=0)
-    await r.flushall(asynchronous=True)
+    # r = redis.Redis(host=REDIS_HOST, port=REDIS_PORT, db=0)
+
+    # делаем flush
+    for db in range(0, 16):  # берем только до 14 базы включительно, так как в 15 базе лежат данные нотификаций, которые должны быть сохранены после перезапуска
+        if db in [REDIS_TASKIQ_DB, REDIS_AIOGRAM_DB, REDIS_USER_SCHEDULES_DB]:
+            continue
+        flush_redis = redis.Redis(host=REDIS_HOST, port=REDIS_PORT, db=db)
+        await flush_redis.flushdb(asynchronous=True)
 
     dp = Dispatcher()
     bot = Bot(token=TOKEN)
@@ -48,8 +54,10 @@ async def main():
 
     setup_dialogs(dp)
 
-    nc, js = await connect_to_nats('nats://nats:4222')
-    await run_nuts_migrations(js)
+    nc, js = await connect_to_nats()
+    await OnStartupActions().run_nuts_migrations(js)
+    await OnStartupActions().setup_notifications(js)
+
     await asyncio.gather(
         start_consumers(nc, js, bot, translator_hub),
         dp.start_polling(
@@ -62,4 +70,3 @@ async def main():
 
 if __name__ == '__main__':
     asyncio.run(main())
-
