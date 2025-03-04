@@ -1,5 +1,6 @@
 from nats.js import JetStreamContext
 from nats.js.api import StreamConfig, RetentionPolicy, StorageType
+from nats.js.errors import NotFoundError
 
 from src.services.schedule_notifications_manager.taskiq_brokers.broker import broker, redis_source, scheduler
 from src.services.schedule_notifications_manager.tasks.tasks import BirthdateNotificationManager
@@ -35,5 +36,8 @@ class OnStartupActions:
         ]
 
         for stream in streams:
-            await js.delete_stream(stream.name)
+            try:
+                await js.delete_stream(stream.name)
+            except NotFoundError:
+                pass
             await js.add_stream(stream)
