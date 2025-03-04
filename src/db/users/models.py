@@ -1,7 +1,7 @@
 import datetime
 from typing import Optional, List
 
-from sqlalchemy import BigInteger, Enum, Date, String
+from sqlalchemy import BigInteger, Enum, Date
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from src.db.db_connect import Base
@@ -17,6 +17,7 @@ class UserModel(Base):
     name: Mapped[Optional[str]]
     username: Mapped[Optional[str]]
     language_code: Mapped[str]
+    is_blocked: Mapped[bool]
 
     own_wish_lists: Mapped[Optional[list["WishListModel"]]] = relationship(
         back_populates="owner"

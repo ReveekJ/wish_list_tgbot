@@ -1,4 +1,5 @@
 import asyncio
+from calendar import mdays
 
 from aiogram import Bot
 from aiogram.exceptions import TelegramRetryAfter
@@ -36,6 +37,10 @@ class TextMessagesNotificationConsumer(BaseNotificationConsumer[TextMessage]):
 
         with UserCRUD() as crud:
             user = crud.get_obj_by_id(int(message.user_id))
+
+        if user.is_blocked:
+            await msg.ack()
+            return
 
         i18n = self.__translator_buh.get_translator_by_locale(user.language_code)
         try:

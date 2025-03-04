@@ -4,6 +4,7 @@ from nats.js import JetStreamContext
 from pydantic import BaseModel
 from taskiq.scheduler.created_schedule import CreatedSchedule
 
+from src.db.users.crud import UserCRUD
 from src.db.wish_lists.crud import WishListCRUD
 from src.services.notification_manager.publishers.text_messages_publisher import TextMessagesNotificationPublisher
 from src.services.notification_manager.schemas.text_message_schema import TextMessage
@@ -27,7 +28,11 @@ class BirthdateNotificationManager(metaclass=Singleton):
     @broker.task
     async def __birthdate_notifications_task(config: BirthdateNotificationConfig):
         nc, js = await connect_to_nats()
-        print('я в таске')
+
+        with UserCRUD() as user_crud:
+            user = user_crud.get_obj_by_id(config.user_id)
+            if user.is_blocked:
+                await redis_source.delete_schedule()
         with WishListCRUD() as crud:
             wish_lists = crud.get_wish_lists_by_user_id(config.user_id)
             users_to_notify = []

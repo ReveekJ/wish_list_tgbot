@@ -14,6 +14,7 @@ class User(BaseModel):
     name: str
     username: str
     language_code: str
+    is_blocked: bool
 
     # own_wish_lists: Optional[list["WishList"]] = []
     # member_wish_lists: Optional[list["WishList"]] = []
