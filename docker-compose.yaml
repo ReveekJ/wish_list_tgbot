@@ -22,8 +22,8 @@ services:
     ports:
       - "5432:5432"
 
-  tgbot:
-    container_name: tgbot
+  wish_tgbot:
+    container_name: wish_tgbot
     restart: "no"
     build:
       context: .
@@ -32,16 +32,16 @@ services:
       - .env
     depends_on:
       - wish_list_db
-      - redis
-      - nats
+      - wish_redis
+      - wish_nats
     networks:
       - app_network
     volumes:
       - wish_images:/usr/project/wish_images
 
-  redis:
+  wish_redis:
     image: redis:latest
-    container_name: redis
+    container_name: wish_redis
     ports:
       - "6379:6379"
     volumes:
@@ -49,8 +49,8 @@ services:
     networks:
       - app_network
 
-  nats:
-    container_name: nats
+  wish_nats:
+    container_name: wish_nats
     image: nats:latest
     entrypoint: /nats-server
     command: "-c /config/server.conf"
@@ -63,17 +63,17 @@ services:
     networks:
       - app_network
 
-  nats-nui:
-    image: ghcr.io/nats-nui/nui:latest
-    container_name: nats-nui
-    ports:
-      - "31311:31311"  # Порт для доступа к NATS NUI
-    volumes:
-      - ./nui/db:/db
-    depends_on:
-      - nats
-    networks:
-      - app_network
+#  nats-nui:
+#    image: ghcr.io/nats-nui/nui:latest
+#    container_name: nats-nui
+#    ports:
+#      - "31311:31311"  # Порт для доступа к NATS NUI
+#    volumes:
+#      - ./nui/db:/db
+#    depends_on:
+#      - nats
+#    networks:
+#      - app_network
 
 volumes:
   postgres-data:
