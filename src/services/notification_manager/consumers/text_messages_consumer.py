@@ -1,9 +1,6 @@
-import asyncio
-from calendar import mdays
-
 from aiogram import Bot
 from aiogram.exceptions import TelegramRetryAfter
-from fluentogram import TranslatorRunner, TranslatorHub
+from fluentogram import TranslatorHub
 from nats.aio.client import Client
 from nats.aio.msg import Msg
 from nats.js import JetStreamContext
