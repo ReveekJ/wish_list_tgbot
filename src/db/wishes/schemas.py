@@ -14,7 +14,7 @@ class Wish(BaseModel):
     photo: Optional[str] = None
     description: Optional[str] = None
     link_to_marketplace: Optional[str] = None
-    price: Optional[int] = None
+    price: Optional[str] = None
 
     is_booked: bool = False
     booked_by_user_id: Optional[int] = None
