@@ -3,6 +3,8 @@ from typing import List, Dict, Any, Optional
 from sqlalchemy import select
 
 from src.db.cache_db_binds import CACHE_WISH_LIST_DB, CACHE_USER_DB
+from src.db.users.models import UserModel
+from src.db.wish_list_members_secondary.models import WishListMembersModel
 from src.db.wish_lists.models import WishListModel
 from src.db.wish_lists.schemas import WishList
 from src.utils.cache_manager import CacheManager
@@ -19,6 +21,15 @@ class WishListCRUD(DBTemplate[WishListModel, WishList]):
                 cache_redis_db=CACHE_WISH_LIST_DB
             )
         )
+
+    def get_wish_lists_which_user_subscribed(self, subscriber_id: int, wish_list_owner_id: int) -> List[WishListModel]:
+        query = (select(WishListModel)
+                 .join(UserModel, WishListModel.owner_id == UserModel.id)
+                 .join(WishListMembersModel)
+                 .filter(UserModel.id == wish_list_owner_id, WishListMembersModel.user_id == subscriber_id))
+        res = self._db.execute(query).scalars().all()
+
+        return [WishList.model_validate(i, from_attributes=True) for i in res]
 
     @CacheManager(CACHE_USER_DB).reset_cache('owner_id')
     @CacheManager(CACHE_WISH_LIST_DB, WishList).save_cache_from_db()

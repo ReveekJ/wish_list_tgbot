@@ -4,6 +4,7 @@ from aiogram_dialog import DialogManager
 from aiogram_dialog.api.entities import MediaAttachment
 
 from src.db.users.crud import UserCRUD
+from src.db.wish_list_members_secondary.crud import WishListMembersSecondaryCRUD
 from src.db.wish_lists.crud import WishListCRUD
 from src.db.wishes.crud import WishCRUD
 from src.tgbot.friends_wish_list.dto.friends_wish_list_dto import FriendsWishListDTO
@@ -21,7 +22,7 @@ async def get_wish_list(event_from_user: AiogramUser, dialog_manager: DialogMana
     dto = FriendsWishListDTO(dialog_manager)
 
     with WishListCRUD() as wish_list_crud:
-        wish_lists = wish_list_crud.get_wish_lists_by_user_id(dto.data.selected_friend_id)
+        wish_lists = wish_list_crud.get_wish_lists_which_user_subscribed(event_from_user.id, dto.data.selected_friend_id)
 
     return {'wish_list': [(i.id, i.name) for i in wish_lists]}
 
