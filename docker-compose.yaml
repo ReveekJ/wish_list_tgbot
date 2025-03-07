@@ -20,7 +20,7 @@ services:
     volumes:
       - postgres-data:/var/lib/postgresql/data
     ports:
-      - "5432:5432"
+      - "54321:5432"
 
   wish_tgbot:
     container_name: wish_tgbot
@@ -42,8 +42,8 @@ services:
   wish_redis:
     image: redis:latest
     container_name: wish_redis
-    ports:
-      - "6379:6379"
+#    ports:
+#      - "6379:6379"
     volumes:
       - redis_data:/data
     networks:
@@ -54,9 +54,9 @@ services:
     image: nats:latest
     entrypoint: /nats-server
     command: "-c /config/server.conf"
-    ports:
-      - "4222:4222"
-      - "8222:8222"
+#    ports:
+#      - "4222:4222"
+#      - "8222:8222"
     volumes:
       - ./nats/data:/data
       - ./nats/config/server.conf:/config/server.conf
