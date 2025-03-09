@@ -25,7 +25,7 @@ class WishListCRUD(DBTemplate[WishListModel, WishList]):
     def get_wish_lists_which_user_subscribed(self, subscriber_id: int, wish_list_owner_id: int) -> List[WishListModel]:
         query = (select(WishListModel)
                  .join(UserModel, WishListModel.owner_id == UserModel.id)
-                 .join(WishListMembersModel)
+                 .join(WishListMembersModel, WishListModel.id == WishListMembersModel.wishlist_id)
                  .filter(UserModel.id == wish_list_owner_id, WishListMembersModel.user_id == subscriber_id))
         res = self._db.execute(query).scalars().all()
 
