@@ -1,6 +1,6 @@
 from typing import Dict, Any, Optional
 
-from src.db.cache_db_binds import CACHE_WISH_DB, CACHE_WISH_LIST_DB
+from src.config import CACHE_WISH_DB, CACHE_WISH_LIST_DB
 from src.db.wishes.models import WishModel
 from src.db.wishes.schemas import Wish
 from src.utils.cache_manager import CacheManager

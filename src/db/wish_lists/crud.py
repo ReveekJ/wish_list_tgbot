@@ -2,7 +2,7 @@ from typing import List, Dict, Any, Optional
 
 from sqlalchemy import select
 
-from src.db.cache_db_binds import CACHE_WISH_LIST_DB, CACHE_USER_DB
+from src.config import CACHE_WISH_LIST_DB, CACHE_USER_DB
 from src.db.users.models import UserModel
 from src.db.wish_list_members_secondary.models import WishListMembersModel
 from src.db.wish_lists.models import WishListModel

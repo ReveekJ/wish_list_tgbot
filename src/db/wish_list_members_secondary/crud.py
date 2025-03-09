@@ -3,13 +3,10 @@ from typing import Optional, List
 from pydantic import BaseModel
 from sqlalchemy import select
 
-from src.db.cache_db_binds import CACHE_WISH_LIST_MEMBERS_SECONDARY_DB, CACHE_WISH_LIST_DB, CACHE_USER_DB
-from src.db.users.models import UserModel
+from src.config import CACHE_WISH_LIST_MEMBERS_SECONDARY_DB, CACHE_USER_DB, CACHE_WISH_LIST_DB
 from src.db.users.schemas import User
 from src.db.wish_list_members_secondary.models import WishListMembersModel
 from src.db.wish_list_members_secondary.schemas import WishListMember
-from src.db.wish_lists.models import WishListModel
-from src.db.wish_lists.schemas import WishList
 from src.utils.cache_manager import CacheManager
 from src.utils.db_template import DBTemplate, DBParams
 
