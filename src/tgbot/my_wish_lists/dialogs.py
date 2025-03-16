@@ -112,6 +112,11 @@ my_wish_lists_dialog = Dialog(
             on_click=go_to_edit_price
         ),
         SwitchTo(
+            I18NFormat('wish-fulfilled'),
+            id='wish_fulfilled',
+            state=MyWishListSG.wish_fulfilled
+        ),
+        SwitchTo(
             I18NFormat('delete-wish'),
             id='switch_to_delete_wish',
             state=MyWishListSG.delete_wish
@@ -139,5 +144,22 @@ my_wish_lists_dialog = Dialog(
         ),
         state=MyWishListSG.delete_wish
     ),
+    Window(
+        I18NFormat('wish-fulfilled-approve'),
+        Button(
+            I18NFormat('yes-wish-fulfilled'),
+            id='yes_wish_fulfilled',
+            on_click=delete_wish
+        ),
+        SwitchTo(
+            I18NFormat('not-fulfilled'),
+            id='not_fulfilled',
+            state=MyWishListSG.action_with_wish
+        ),
+        BackButton(
+            state=MyWishListSG.action_with_wish,
+        ),
+        state=MyWishListSG.wish_fulfilled
+    )
     # on_process_result=on_process_result_when_delete
 )

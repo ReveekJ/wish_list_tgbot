@@ -25,3 +25,8 @@ edit-photo = Изменить фото
 edit-description = Изменить описание
 edit-link-to-marketplace = Изменить ссылку
 edit-price = Изменить цену
+
+wish-fulfilled = Желание исполнили
+wish-fulfilled-approve = Правда исполнили? Если да, то это прекрасно :)
+yes-wish-fulfilled = Да, исполнили
+not-fulfilled = Еще нет
