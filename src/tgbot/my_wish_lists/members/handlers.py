@@ -4,6 +4,7 @@ from aiogram_dialog.widgets.kbd import Button
 from fluentogram import TranslatorRunner
 
 from src.db.wish_list_members_secondary.crud import WishListMembersSecondaryCRUD
+from src.services.security_code_manager.security_code_manager import SecurityCodeManager
 from src.tgbot.my_wish_lists.members.dto.members_list_dto import MembersListDTO
 from src.tgbot.my_wish_lists.members.states import MembersSG
 
@@ -35,3 +36,10 @@ async def delete_member(callback: CallbackQuery, widget: Button, dialog_manager:
 
     await callback.message.answer(i18n.get('successfully-delete-member'))
     await dialog_manager.switch_to(MembersSG.list_of_members, show_mode=ShowMode.DELETE_AND_SEND)
+
+
+async def recreate_link(callback: CallbackQuery, widget: Button, dialog_manager: DialogManager, *args, **kwargs):
+    dto = MembersListDTO(dialog_manager)
+
+    SecurityCodeManager().update_security_code(callback.from_user.id, dto.data.wish_list_id)
+    await dialog_manager.switch_to(MembersSG.add_member)

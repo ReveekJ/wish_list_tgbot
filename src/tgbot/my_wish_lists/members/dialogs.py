@@ -5,7 +5,7 @@ from aiogram_dialog.widgets.text import Format
 from src.custom_widgets.custom_back_button import BackButton
 from src.custom_widgets.i18n_format import I18NFormat
 from src.tgbot.my_wish_lists.members.getters import members_getter, link_for_member_getter
-from src.tgbot.my_wish_lists.members.handlers import on_start_member_dialog, select_member, delete_member
+from src.tgbot.my_wish_lists.members.handlers import on_start_member_dialog, select_member, delete_member, recreate_link
 from src.tgbot.my_wish_lists.members.states import MembersSG
 
 
@@ -38,6 +38,11 @@ members_list_dialog = Dialog(
     Window(
         I18NFormat('send-this-link-to-your-friend'),
         Format('\n{link}'),
+        Button(
+            I18NFormat('recreate-link-btn'),
+            id='recreate_link_btn',
+            on_click=recreate_link
+        ),
         BackButton(
             state=MembersSG.list_of_members
         ),

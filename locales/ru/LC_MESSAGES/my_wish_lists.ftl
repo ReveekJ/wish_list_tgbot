@@ -30,3 +30,5 @@ wish-fulfilled = Желание исполнили
 wish-fulfilled-approve = Правда исполнили? Если да, то это прекрасно :)
 yes-wish-fulfilled = Да, исполнили
 not-fulfilled = Еще нет
+
+recreate-link-btn = Пересоздать ссылку

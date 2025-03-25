@@ -13,3 +13,4 @@ redis~=5.2.1
 nats-py
 taskiq
 taskiq-redis
+dishka
