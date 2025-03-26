@@ -7,9 +7,9 @@ from src.services.security_code_manager.security_code_manager import SecurityCod
 from src.tgbot.common.start_schema import StartSchema
 
 
-async def get_link_for_member_invite(bot: Bot, user_id: int, wish_list_id: int):
+async def get_link_for_member_invite(bot: Bot, wish_list_id: int):
     start_schema = StartSchema(
         wlId=wish_list_id,
-        sc=SecurityCodeManager().get_security_code(user_id, wish_list_id)
+        sc=SecurityCodeManager().get_security_code(wish_list_id)
     )
     return await create_start_link(bot, start_schema.model_dump_json(), encode=True)

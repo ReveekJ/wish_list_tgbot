@@ -48,11 +48,16 @@ async def start_command(message: Message, dialog_manager: DialogManager, i18n: T
             return
 
     if data != "/start": #  пользователь зарегистрирован и он перешел по ссылке на вступление в список желаний
-        loaded_json = json.loads(decode_payload(data))
-        loaded_data = StartSchema.model_validate(loaded_json)
-        del loaded_json
+        try:
+            loaded_json = json.loads(decode_payload(data))
+            loaded_data = StartSchema.model_validate(loaded_json)
+            del loaded_json
+        except Exception as e:  # будет ошибка валидации, если ссылка не верна
+            await message.answer(i18n.get('security-code-invalid'))
+            await dialog_manager.start(MainMenuSG.main_menu)
+            return
 
-        if not SecurityCodeManager().check_security_code(loaded_data.sc, message.from_user.id, loaded_data.wlId):
+        if not SecurityCodeManager().check_security_code(loaded_data.sc, loaded_data.wlId):
             await message.answer(i18n.get('security-code-invalid'))
             await dialog_manager.start(MainMenuSG.main_menu)
             return
@@ -80,5 +85,6 @@ async def start_command(message: Message, dialog_manager: DialogManager, i18n: T
 
         await message.answer(i18n.get('successfully-joined-to-wishlist', wishlist_name=wish_list.name))
         await dialog_manager.start(MainMenuSG.main_menu)
+        return
 
     await dialog_manager.start(MainMenuSG.main_menu) # пользователь зарегистрирован, просто нажал на кнопку старт и просто это нужно делать всегда

@@ -41,5 +41,5 @@ async def delete_member(callback: CallbackQuery, widget: Button, dialog_manager:
 async def recreate_link(callback: CallbackQuery, widget: Button, dialog_manager: DialogManager, *args, **kwargs):
     dto = MembersListDTO(dialog_manager)
 
-    SecurityCodeManager().update_security_code(callback.from_user.id, dto.data.wish_list_id)
+    SecurityCodeManager().update_security_code(dto.data.wish_list_id)
     await dialog_manager.switch_to(MembersSG.add_member)
