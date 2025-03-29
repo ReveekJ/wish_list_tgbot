@@ -1,6 +1,7 @@
 import json
 
 from aiogram import Router, Bot
+from aiogram.exceptions import TelegramBadRequest
 from aiogram.filters import CommandStart
 from aiogram.types import Message
 from aiogram.utils.payload import decode_payload
@@ -35,10 +36,13 @@ async def start_command(message: Message, dialog_manager: DialogManager, i18n: T
             flag = False
 
     # удаляем это сообщение для красоты
-    last_message_id = r.get(message.from_user.id)
+    last_message_id = await r.get(message.from_user.id)
     if last_message_id:
-        await bot.delete_message(message.chat.id, last_message_id)
-        r.delete(message.from_user.id)
+        try:
+            await bot.delete_message(message.chat.id, last_message_id)
+            await r.set(message.from_user.id, int(last_message_id) + int('2'))
+        except TelegramBadRequest:
+            pass
 
     # Если пользователь не зарегистрирован - отправить на регистрацию
     with UserCRUD() as user_crud:
