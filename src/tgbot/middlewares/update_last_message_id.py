@@ -15,6 +15,6 @@ class UpdateLastMessageIdMiddleware(BaseMiddleware):
             di_container: AsyncContainer = data.get("di_container")
             r = await di_container.get(RedisLastMessageIdCache)
 
-            r.set(callback.from_user.id, callback.message.message_id)
+            await r.set(callback.from_user.id, callback.message.message_id)
 
         return await handler(event, data)

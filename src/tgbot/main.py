@@ -1,9 +1,12 @@
 import asyncio
 
+from aiogram.fsm.storage.base import DefaultKeyBuilder
+from redis.asyncio import Redis
 from aiogram import Dispatcher, Bot
+from aiogram.fsm.storage.redis import RedisStorage
 from aiogram_dialog import setup_dialogs
 
-from src.config import TOKEN
+from src.config import TOKEN, REDIS_HOST, REDIS_PORT, REDIS_AIOGRAM_DB
 from src.services.utils.start_consumers import start_consumers
 from src.tgbot.common import start_command
 from src.tgbot.friends_wish_list.dialogs import friends_wish_list_dialog
@@ -23,7 +26,10 @@ from src.utils.nats.nats_connect import connect_to_nats
 
 
 async def main():
-    dp = Dispatcher()
+    r = Redis(host=REDIS_HOST, port=REDIS_PORT, db=REDIS_AIOGRAM_DB)
+    storage = RedisStorage(r, key_builder=DefaultKeyBuilder(with_destiny=True))
+
+    dp = Dispatcher(storage=storage)
     bot = Bot(token=TOKEN)
     translator_hub = create_translator_hub()
 

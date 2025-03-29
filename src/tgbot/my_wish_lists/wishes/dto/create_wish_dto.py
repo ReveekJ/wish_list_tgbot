@@ -9,7 +9,7 @@ from src.utils.abstract_dialog_data_dto import DialogDataDTO
 class CreateWishSchema(BaseModel):
     wish_list_id: Optional[int] = None
     name: Optional[str] = None
-    photos: list[str] = None
+    photos: Optional[list[str]] = None
     description: Optional[str] = None
     link_to_marketplace: Optional[str] = None
     price: Optional[int] = None
