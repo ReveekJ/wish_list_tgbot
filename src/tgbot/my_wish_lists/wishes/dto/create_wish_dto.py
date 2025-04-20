@@ -12,7 +12,7 @@ class CreateWishSchema(BaseModel):
     photos: Optional[list[str]] = None
     description: Optional[str] = None
     link_to_marketplace: Optional[str] = None
-    price: Optional[int] = None
+    price: Optional[str] = None
 
     edit_mode: bool = False
 

@@ -4,12 +4,13 @@ from sqlalchemy import BigInteger, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from src.db.db_connect import Base
+from src.db.utils.id_generator import IdGenerator
 
 
 class WishModel(Base):
     __tablename__ = "wishes"
 
-    id: Mapped[BigInteger] = mapped_column(BigInteger, primary_key=True, autoincrement=True)
+    id: Mapped[BigInteger] = mapped_column(BigInteger, primary_key=True, insert_default=IdGenerator.generate_wish_id)
     wish_list_id: Mapped[BigInteger] = mapped_column(BigInteger, ForeignKey("wish_lists.id"))
 
     name: Mapped[str]
