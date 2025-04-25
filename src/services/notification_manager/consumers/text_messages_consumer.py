@@ -60,18 +60,24 @@ class TextMessagesNotificationConsumer(BaseNotificationConsumer[TextMessage]):
             except TelegramBadRequest:
                 pass
 
-            # отправляем основной диалог
-            aiogram_user = AiogramUser(id=user.id, language_code=user.language_code, is_bot=False, first_name=user.name)
-            chat = Chat(id=user.id, type='private')
-            bg_manager = BgManager(user=aiogram_user, chat=chat, bot=self.bot, router=main_dialog, intent_id=None, stack_id="")
-            await bg_manager.start(
-                MainMenuSG.main_menu,
-                mode=StartMode.RESET_STACK,
-                show_mode=ShowMode.SEND
-            )
+            try:
+                # отправляем основной диалог
+                aiogram_user = AiogramUser(id=user.id, language_code=user.language_code, is_bot=False, first_name=user.name)
+                chat = Chat(id=user.id, type='private')
+                bg_manager = BgManager(user=aiogram_user, chat=chat, bot=self.bot, router=main_dialog, intent_id=None, stack_id="")
+                await bg_manager.start(
+                    MainMenuSG.main_menu,
+                    mode=StartMode.RESET_STACK,
+                    show_mode=ShowMode.SEND
+                )
+            except Exception as e:
+                pass
 
-            # обновляем last_message_id
-            await r.set(int(message.user_id), int(last_message_id) + int('2'))
+            try:
+                # обновляем last_message_id
+                await r.set(int(message.user_id), int(last_message_id) + int('2'))
+            except Exception as e:
+                pass
 
             # отмечаем сообщение обработанным
             await msg.ack()
